@@ -49,6 +49,8 @@ public class EditorCore extends LinearLayout {
     public String placeHolder = null;
     public String imageDescriptionHint = null;
     public String uploadingHint = null;
+    public String uploadSuccessHint = null;
+    public String uploadFailHint = null;
     /*
     * Divider initializors
     */
@@ -215,13 +217,25 @@ public class EditorCore extends LinearLayout {
         TypedArray a = null;
         try {
             a = getContext().obtainStyledAttributes(attributeSet, R.styleable.editor);
+
             this.placeHolder = a.getString(R.styleable.editor_placeholder);
-            this.imageDescriptionHint = a.getString(R.styleable.editor_placeholder);
-            if(imageDescriptionHint == null || imageDescriptionHint.trim().length() == 0)
+
+            this.imageDescriptionHint = a.getString(R.styleable.editor_imageDescriptionHint);
+            if (imageDescriptionHint == null || imageDescriptionHint.trim().length() == 0)
                 imageDescriptionHint = __context.getString(R.string.image_description_hint);
+
             this.uploadingHint = a.getString(R.styleable.editor_uploadingHint);
-            if(uploadingHint == null || uploadingHint.trim().length() == 0)
+            if (uploadingHint == null || uploadingHint.trim().length() == 0)
                 uploadingHint = __context.getString(R.string.uploading_hint);
+
+            this.uploadSuccessHint = a.getString(R.styleable.editor_uploadSuccessHint);
+            if (uploadSuccessHint == null || uploadSuccessHint.trim().length() == 0)
+                uploadSuccessHint = __context.getString(R.string.upload_success);
+
+            this.uploadFailHint = a.getString(R.styleable.editor_uploadFailHint);
+            if (uploadFailHint == null || uploadFailHint.trim().length() == 0)
+                uploadFailHint = __context.getString(R.string.upload_fail);
+
             String renderType = a.getString(R.styleable.editor_render_type);
             if (TextUtils.isEmpty(renderType)) {
                 this.__renderType = com.github.irshulx.models.RenderType.Editor;

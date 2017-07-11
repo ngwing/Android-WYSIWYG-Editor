@@ -167,7 +167,7 @@ public class ImageExtensions {
     public void onPostUpload(String url, String imageId) {
         View view = findImageById(imageId);
         final TextView lblStatus = (TextView) view.findViewById(R.id.lblStatus);
-        lblStatus.setText(!TextUtils.isEmpty(url) ? "Upload complete" : "Upload failed");
+        lblStatus.setText(!TextUtils.isEmpty(url) ? editorCore.uploadSuccessHint : editorCore.uploadFailHint);
         if (!TextUtils.isEmpty(url)) {
             EditorControl control = editorCore.createTag(EditorType.img);
             control.path = url;
