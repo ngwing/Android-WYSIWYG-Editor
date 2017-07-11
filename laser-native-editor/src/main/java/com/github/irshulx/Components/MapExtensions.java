@@ -25,7 +25,7 @@ import com.github.irshulx.EditorCore;
 import com.github.irshulx.MapsActivity;
 import com.github.irshulx.R;
 import com.github.irshulx.models.EditorControl;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.RenderType;
 import com.squareup.picasso.Picasso;
 
@@ -102,10 +102,10 @@ public class MapExtensions {
                 editorCore.getParentView().removeView(childLayout);
             }
         });
-        EditorControl control = editorCore.createTag(EditorType.map);
+        EditorControl control = editorCore.createTag(ControlType.map);
         control.Cords= cords;
         childLayout.setTag(control);
-        int Index= editorCore.determineIndex(EditorType.map);
+        int Index= editorCore.determineIndex(ControlType.map);
         editorCore.getParentView().addView(childLayout, Index);
         if(insertEditText){
           editorCore.getInputExtensions().insertEditText(Index + 1, null, null);

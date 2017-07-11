@@ -1,6 +1,6 @@
 package com.github.irshulx.models;
 
-public enum EditorType{
+public enum ControlType {
     none,
     hr,
     ul,

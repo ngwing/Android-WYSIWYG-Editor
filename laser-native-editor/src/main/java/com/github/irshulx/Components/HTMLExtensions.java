@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.HtmlTag;
 import com.github.irshulx.models.Node;
 
@@ -113,7 +113,7 @@ public class HTMLExtensions {
         return false;
     }
 
-    private String getTemplateHtml(EditorType child) {
+    private String getTemplateHtml(ControlType child) {
         String template = null;
         switch (child) {
             case INPUT:
@@ -144,7 +144,7 @@ public class HTMLExtensions {
 
     private String getInputHtml(Node item) {
         boolean isParagraph = true;
-        String tmpl = getTemplateHtml(EditorType.INPUT);
+        String tmpl = getTemplateHtml(ControlType.INPUT);
         //  CharSequence content= android.text.Html.fromHtml(item.content.get(0)).toString();
         //  CharSequence trimmed= editorCore.getInputExtensions().noTrailingwhiteLines(content);
         String trimmed = Jsoup.parse(item.content.get(0)).body().select("p").html();
@@ -242,7 +242,7 @@ public class HTMLExtensions {
         String tmpl_parent = getTemplateHtml(item.type);
         StringBuilder childBlock = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            String tmpl_li = getTemplateHtml(item.type == EditorType.ul ? EditorType.UL_LI : EditorType.OL_LI);
+            String tmpl_li = getTemplateHtml(item.type == ControlType.ul ? ControlType.UL_LI : ControlType.OL_LI);
             String trimmed = Jsoup.parse(item.content.get(i)).body().select("p").html();
             tmpl_li = tmpl_li.replace("{{$content}}", trimmed);
             childBlock.append(tmpl_li);

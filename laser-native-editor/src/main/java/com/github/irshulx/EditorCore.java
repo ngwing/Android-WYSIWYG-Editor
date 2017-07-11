@@ -30,7 +30,7 @@ import com.github.irshulx.Components.MapExtensions;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.Node;
 import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
@@ -256,7 +256,7 @@ public class EditorCore extends LinearLayout {
      * @param nextType
      * @return
      */
-    public int determineIndex(EditorType nextType) {
+    public int determineIndex(ControlType nextType) {
         int size = this.__parentView.getChildCount();
         if (this.__renderType == RenderType.Renderer)
             return size;
@@ -264,15 +264,15 @@ public class EditorCore extends LinearLayout {
         if (_view == null)
             return size;
         int currentIndex = this.__parentView.indexOfChild(_view);
-        EditorType activeType = getControlType(_view);
-        if (activeType == EditorType.INPUT) {
+        ControlType activeType = getControlType(_view);
+        if (activeType == ControlType.INPUT) {
             int length = ((EditText) this.__activeView).getText().length();
             if (length > 0) {
-                return nextType == EditorType.UL_LI || nextType == EditorType.OL_LI ? currentIndex : (currentIndex + 1);
+                return nextType == ControlType.UL_LI || nextType == ControlType.OL_LI ? currentIndex : (currentIndex + 1);
             } else {
                 return currentIndex;
             }
-        } else if (activeType == EditorType.UL_LI || activeType == EditorType.OL_LI) {
+        } else if (activeType == ControlType.UL_LI || activeType == ControlType.OL_LI) {
             EditText _text = (EditText) _view.findViewById(R.id.txtText);
             if (_text.getText().length() > 0) {
 
@@ -310,13 +310,13 @@ public class EditorCore extends LinearLayout {
         return controlTag;
     }
 
-    public EditorType getControlType(View _view) {
+    public ControlType getControlType(View _view) {
         if (_view == null)
             return null;
         EditorControl _control = (EditorControl) _view.getTag();
         if (_control == null)
             return null;
-        return _control.Type;
+        return _control.type;
     }
 
     public EditorControl getControlTag(View view) {
@@ -326,9 +326,9 @@ public class EditorCore extends LinearLayout {
         return control;
     }
 
-    public EditorControl createTag(EditorType type) {
+    public EditorControl createTag(ControlType type) {
         EditorControl control = new EditorControl();
-        control.Type = type;
+        control.type = type;
         control._ControlStyles = new ArrayList<>();
         switch (type) {
             case hr:
@@ -352,18 +352,19 @@ public class EditorCore extends LinearLayout {
          */
 
 
-        if (contentType != null && (contentType.Type == EditorType.OL_LI || contentType.Type == EditorType.UL_LI)) {
+        if (contentType != null && (contentType.type == ControlType.OL_LI || contentType.type == ControlType.UL_LI)) {
             __listItemExtensions.validateAndRemoveLisNode(view, contentType);
             return;
         }
 
-        View toFocus = __parentView.getChildAt(index - 1);
-        EditorControl control = (EditorControl) toFocus.getTag();
+        View prevView = __parentView.getChildAt(index - 1);
+        EditorControl prevControl = (EditorControl) prevView.getTag();
+        ControlType previousType = prevControl.type;
 
         /**
          * If its an image or map, do not delete edittext, as there is nothing to focus on after image
          */
-        if (control.Type == EditorType.img || control.Type == EditorType.map) {
+        if (previousType == ControlType.img || previousType == ControlType.map) {
             return;
         }
         /*
@@ -372,17 +373,22 @@ public class EditorCore extends LinearLayout {
          *
          */
 
-        if (control.Type == EditorType.ol || control.Type == EditorType.ul) {
+        if (previousType == ControlType.ol || previousType == ControlType.ul) {
          /*
          *
          * previous node on the editor is a list, set focus to its inside
          *
          */
             this.__parentView.removeView(view);
-            __listItemExtensions.setFocusToList(toFocus, ListItemExtensions.POSITION_END);
-        } else {
-            removeParent(view);
+            __listItemExtensions.setFocusToList(prevView, ListItemExtensions.POSITION_END);
+            return;
         }
+
+        if (previousType == ControlType.INPUT) {
+            removeParent(view);
+            return;
+        }
+        removeParent(prevView);
     }
 
 
@@ -395,7 +401,7 @@ public class EditorCore extends LinearLayout {
         if (__dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
             indexOfDeleteItem -= 1;
         for (int i = 0; i < indexOfDeleteItem; i++) {
-            if (getControlType(__parentView.getChildAt(i)) == EditorType.INPUT) {
+            if (getControlType(__parentView.getChildAt(i)) == ControlType.INPUT) {
                 nextItem = __parentView.getChildAt(i);
                 continue;
             }
@@ -464,7 +470,7 @@ public class EditorCore extends LinearLayout {
         for (int i = 0; i < childCount; i++) {
             Node node = new Node();
             View view = __parentView.getChildAt(i);
-            EditorType type = getControlType(view);
+            ControlType type = getControlType(view);
             node.type = type;
             node.content = new ArrayList<>();
             switch (type) {
@@ -537,9 +543,9 @@ public class EditorCore extends LinearLayout {
                     TableLayout _layout = null;
                     for (int i = 0; i < item.content.size(); i++) {
                         if (i == 0) {
-                            _layout = __listItemExtensions.insertList(_state.nodes.indexOf(item), item.type == EditorType.ol, item.content.get(i));
+                            _layout = __listItemExtensions.insertList(_state.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
                         } else {
-                            __listItemExtensions.AddListItem(_layout, item.type == EditorType.ol, item.content.get(i));
+                            __listItemExtensions.AddListItem(_layout, item.type == ControlType.ol, item.content.get(i));
                         }
                     }
                     break;
@@ -592,10 +598,10 @@ public class EditorCore extends LinearLayout {
         int length = editText.getText().length();
         int selectionStart = editText.getSelectionStart();
 
-        EditorType editorType = getControlType(this.__activeView);
+        ControlType controlType = getControlType(this.__activeView);
         CustomEditText nextFocus;
         if (selectionStart == 0 && length > 0) {
-            if ((editorType == EditorType.UL_LI || editorType == EditorType.OL_LI)) {
+            if ((controlType == ControlType.UL_LI || controlType == ControlType.OL_LI)) {
                 //now that we are inside the edittext, focus inside it
                 int index = __listItemExtensions.getIndexOnEditorByEditText(editText);
                 if (index == 0) {
@@ -617,7 +623,7 @@ public class EditorCore extends LinearLayout {
         EditorControl control = getControlTag(getParentView().getChildAt(0));
         if (control == null)
             return false;
-        switch (control.Type) {
+        switch (control.type) {
             case ul:
             case ol:
                 __parentView.removeAllViews();

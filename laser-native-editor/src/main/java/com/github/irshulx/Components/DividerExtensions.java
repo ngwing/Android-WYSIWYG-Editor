@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.github.irshulx.R;
 import com.github.irshulx.EditorCore;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.RenderType;
 
 /**
@@ -41,8 +41,8 @@ public class DividerExtensions {
 
     public void insertDivider() {
         View view = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.dividerLayout, null);
-        view.setTag(editorCore.createTag(EditorType.hr));
-        int index = editorCore.determineIndex(EditorType.hr);
+        view.setTag(editorCore.createTag(ControlType.hr));
+        int index = editorCore.determineIndex(ControlType.hr);
         if (index == 0) {
             Toast.makeText(editorCore.getContext(), "divider cannot be inserted on line zero", Toast.LENGTH_SHORT).show();
             return;
@@ -64,7 +64,7 @@ public class DividerExtensions {
         View view = editorCore.getParentView().getChildAt(indexOfDeleteItem);
 //        if(view == null)
 //            return true;
-        if (view == null ||editorCore.getControlType(view) == EditorType.hr) {
+        if (view == null ||editorCore.getControlType(view) == ControlType.hr) {
             editorCore.getParentView().removeView(view);
             return true;
         }

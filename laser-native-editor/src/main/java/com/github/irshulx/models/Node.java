@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    public EditorType type;
+    public ControlType type;
     public ArrayList<String> content;
     public List<EditorTextStyle> contentStyles;
 }

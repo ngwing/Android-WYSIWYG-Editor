@@ -22,7 +22,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,7 +33,7 @@ import android.widget.TextView;
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.R;
 import com.github.irshulx.models.EditorControl;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
@@ -85,7 +84,7 @@ public class ImageExtensions {
         final String uuid = generateUUID();
         BindEvents(childLayout);
         if (index == -1) {
-            index = editorCore.determineIndex(EditorType.img);
+            index = editorCore.determineIndex(ControlType.img);
         }
         showNextInputHint(index);
         editorCore.getParentView().addView(childLayout, index);
@@ -94,7 +93,7 @@ public class ImageExtensions {
         if (editorCore.isLastRow(childLayout)) {
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
         }
-        EditorControl control = editorCore.createTag(EditorType.img);
+        EditorControl control = editorCore.createTag(ControlType.img);
         control.path = uuid; // set the imageId,so we can recognize later after upload
         childLayout.setTag(control);
         childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
@@ -104,8 +103,8 @@ public class ImageExtensions {
 
     private void showNextInputHint(int index) {
         View view = editorCore.getParentView().getChildAt(index);
-        EditorType type = editorCore.getControlType(view);
-        if (type != EditorType.INPUT)
+        ControlType type = editorCore.getControlType(view);
+        if (type != ControlType.INPUT)
             return;
         TextView tv = (TextView) view;
         tv.setHint(editorCore.placeHolder);
@@ -113,15 +112,15 @@ public class ImageExtensions {
 
     private void hideInputHint(int index) {
         View view = editorCore.getParentView().getChildAt(index);
-        EditorType type = editorCore.getControlType(view);
-        if (type != EditorType.INPUT)
+        ControlType type = editorCore.getControlType(view);
+        if (type != ControlType.INPUT)
             return;
 
         String hint = editorCore.placeHolder;
         if (index > 0) {
             View prevView = editorCore.getParentView().getChildAt(index - 1);
-            EditorType prevType = editorCore.getControlType(prevView);
-            if (prevType == EditorType.INPUT)
+            ControlType prevType = editorCore.getControlType(prevView);
+            if (prevType == ControlType.INPUT)
                 hint = null;
         }
         TextView tv = (TextView) view;
@@ -169,7 +168,7 @@ public class ImageExtensions {
         final TextView lblStatus = (TextView) view.findViewById(R.id.lblStatus);
         lblStatus.setText(!TextUtils.isEmpty(url) ? editorCore.uploadSuccessHint : editorCore.uploadFailHint);
         if (!TextUtils.isEmpty(url)) {
-            EditorControl control = editorCore.createTag(EditorType.img);
+            EditorControl control = editorCore.createTag(ControlType.img);
             control.path = url;
             view.setTag(control);
             TimerTask timerTask = new TimerTask() {

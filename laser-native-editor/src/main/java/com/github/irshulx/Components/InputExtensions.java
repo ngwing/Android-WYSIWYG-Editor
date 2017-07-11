@@ -28,7 +28,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,7 +42,7 @@ import com.github.irshulx.R;
 import com.github.irshulx.Utilities.FontCache;
 import com.github.irshulx.models.EditorTextStyle;
 import com.github.irshulx.models.EditorControl;
-import com.github.irshulx.models.EditorType;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
 
@@ -162,7 +161,7 @@ public class InputExtensions {
         if (text != null) {
             setText(editText, text);
         }
-        editText.setTag(editorCore.createTag(EditorType.INPUT));
+        editText.setTag(editorCore.createTag(ControlType.INPUT));
         editText.setBackgroundDrawable(ContextCompat.getDrawable(this.editorCore.getContext(), R.drawable.invisible_edit_text));
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -238,8 +237,8 @@ public class InputExtensions {
         if (index == 0)
             return false;
         View view = editorCore.getParentView().getChildAt(index - 1);
-        EditorType type = editorCore.getControlType(view);
-        return type == EditorType.INPUT;
+        ControlType type = editorCore.getControlType(view);
+        return type == ControlType.INPUT;
     }
 
     private void addEditableStyling(TextView editText) {
@@ -267,7 +266,7 @@ public class InputExtensions {
             return view;
         } else {
             final TextView view = getNewTextView(text);
-            view.setTag(editorCore.createTag(EditorType.INPUT));
+            view.setTag(editorCore.createTag(ControlType.INPUT));
             editorCore.getParentView().addView(view);
             return view;
         }
@@ -448,9 +447,9 @@ public class InputExtensions {
     }
 
     public void insertLink(String uri) {
-        EditorType editorType = editorCore.getControlType(editorCore.getActiveView());
+        ControlType controlType = editorCore.getControlType(editorCore.getActiveView());
         EditText editText = (EditText) editorCore.getActiveView();
-        if (editorType == EditorType.INPUT || editorType == EditorType.UL_LI) {
+        if (controlType == ControlType.INPUT || controlType == ControlType.UL_LI) {
             String text = Html.toHtml(editText.getText());
             if (TextUtils.isEmpty(text))
                 text = "<p dir=\"ltr\"></p>";
@@ -524,14 +523,14 @@ public class InputExtensions {
     public void setFocusToNext(int startIndex) {
         for (int i = startIndex; i < editorCore.getParentView().getChildCount(); i++) {
             View view = editorCore.getParentView().getChildAt(i);
-            EditorType editorType = editorCore.getControlType(view);
-            if (editorType == EditorType.hr || editorType == EditorType.img || editorType == EditorType.map || editorType == EditorType.none)
+            ControlType controlType = editorCore.getControlType(view);
+            if (controlType == ControlType.hr || controlType == ControlType.img || controlType == ControlType.map || controlType == ControlType.none)
                 continue;
-            if (editorType == EditorType.INPUT) {
+            if (controlType == ControlType.INPUT) {
                 setFocus((CustomEditText) view);
                 break;
             }
-            if (editorType == EditorType.ol || editorType == EditorType.ul) {
+            if (controlType == ControlType.ol || controlType == ControlType.ul) {
                 editorCore.getListItemExtensions().setFocusToList(view, ListItemExtensions.POSITION_START);
                 editorCore.setActiveView(view);
             }
@@ -542,14 +541,14 @@ public class InputExtensions {
         CustomEditText customEditText = null;
         for (int i = 0; i < startIndex; i++) {
             View view = editorCore.getParentView().getChildAt(i);
-            EditorType editorType = editorCore.getControlType(view);
-            if (editorType == EditorType.hr || editorType == EditorType.img || editorType == EditorType.map || editorType == EditorType.none)
+            ControlType controlType = editorCore.getControlType(view);
+            if (controlType == ControlType.hr || controlType == ControlType.img || controlType == ControlType.map || controlType == ControlType.none)
                 continue;
-            if (editorType == EditorType.INPUT) {
+            if (controlType == ControlType.INPUT) {
                 customEditText = (CustomEditText) view;
                 continue;
             }
-            if (editorType == EditorType.ol || editorType == EditorType.ul) {
+            if (controlType == ControlType.ol || controlType == ControlType.ul) {
                 editorCore.getListItemExtensions().setFocusToList(view, ListItemExtensions.POSITION_START);
                 editorCore.setActiveView(view);
             }
@@ -560,14 +559,14 @@ public class InputExtensions {
     public void setFocusToPrevious(int startIndex) {
         for (int i = startIndex; i > 0; i--) {
             View view = editorCore.getParentView().getChildAt(i);
-            EditorType editorType = editorCore.getControlType(view);
-            if (editorType == EditorType.hr || editorType == EditorType.img || editorType == EditorType.map || editorType == EditorType.none)
+            ControlType controlType = editorCore.getControlType(view);
+            if (controlType == ControlType.hr || controlType == ControlType.img || controlType == ControlType.map || controlType == ControlType.none)
                 continue;
-            if (editorType == EditorType.INPUT) {
+            if (controlType == ControlType.INPUT) {
                 setFocus((CustomEditText) view);
                 break;
             }
-            if (editorType == EditorType.ol || editorType == EditorType.ul) {
+            if (controlType == ControlType.ol || controlType == ControlType.ul) {
                 editorCore.getListItemExtensions().setFocusToList(view, ListItemExtensions.POSITION_START);
                 editorCore.setActiveView(view);
             }
