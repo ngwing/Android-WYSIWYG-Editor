@@ -3,6 +3,7 @@
     <string name="uploading_hint">Uploading...</string>
     <string name="upload_success">Upload Success!</string>
     <string name="upload_fail">Upload Fail~</string>
+    <string name="first_line_warning">Can not insert divider in first line~</string>
     <string name="image_description_hint">Descrition here(optional)</string>
     <string name="app_name">Editor</string>
     <string name="fontFamily__serif">serif</string>

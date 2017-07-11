@@ -51,6 +51,7 @@ public class EditorCore extends LinearLayout {
     public String uploadingHint = null;
     public String uploadSuccessHint = null;
     public String uploadFailHint = null;
+    public String firstLineWarningHint = null;
     /*
     * Divider initializors
     */
@@ -236,6 +237,10 @@ public class EditorCore extends LinearLayout {
             if (uploadFailHint == null || uploadFailHint.trim().length() == 0)
                 uploadFailHint = __context.getString(R.string.upload_fail);
 
+            this.firstLineWarningHint = a.getString(R.styleable.editor_firstLineWarningHint);
+            if (firstLineWarningHint == null || firstLineWarningHint.trim().length() == 0)
+                firstLineWarningHint = __context.getString(R.string.first_line_warning);
+
             String renderType = a.getString(R.styleable.editor_render_type);
             if (TextUtils.isEmpty(renderType)) {
                 this.__renderType = com.github.irshulx.models.RenderType.Editor;
@@ -391,15 +396,38 @@ public class EditorCore extends LinearLayout {
         removeParent(prevView);
     }
 
+    private void checkInputHint(int index) {
+        View view = __parentView.getChildAt(index);
+        if (view == null)
+            return;
+        ControlType type = getControlType(view);
+        if (type != ControlType.INPUT)
+            return;
+
+        String hint = placeHolder;
+        if (index > 0) {
+            View prevView = getParentView().getChildAt(index - 1);
+            ControlType prevType = getControlType(prevView);
+            if (prevType == ControlType.INPUT)
+                hint = null;
+        }
+        TextView tv = (TextView) view;
+        tv.setHint(hint);
+    }
 
     public int removeParent(View view) {
         int indexOfDeleteItem = __parentView.indexOfChild(view);
         View nextItem = null;
         //remove hr if its on top of the delete field
         this.__parentView.removeView(view);
-        Log.d("indexOfDeleteItem", "indexOfDeleteItem : " + indexOfDeleteItem);
-        if (__dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
-            indexOfDeleteItem -= 1;
+        checkInputHint(indexOfDeleteItem);
+//        Log.d("indexOfDeleteItem", "indexOfDeleteItem : " + indexOfDeleteItem);
+//        if (__dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
+//            indexOfDeleteItem -= 1;
+
+        if (view != this.__activeView)
+            return indexOfDeleteItem;
+
         for (int i = 0; i < indexOfDeleteItem; i++) {
             if (getControlType(__parentView.getChildAt(i)) == ControlType.INPUT) {
                 nextItem = __parentView.getChildAt(i);

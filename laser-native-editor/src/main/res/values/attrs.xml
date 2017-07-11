@@ -7,6 +7,6 @@
         <attr name="uploadingHint" format="string|reference" />
         <attr name="uploadSuccessHint" format="string|reference" />
         <attr name="uploadFailHint" format="string|reference" />
-
+        <attr name="firstLineWarningHint" format="string|reference" />
     </declare-styleable>
 </resources>
