@@ -80,13 +80,6 @@ public class EditorTestActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editor.updateTextStyle(EditorTextStyle.OUTDENT);
-            }
-        });
-
         findViewById(R.id.action_bulleted).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

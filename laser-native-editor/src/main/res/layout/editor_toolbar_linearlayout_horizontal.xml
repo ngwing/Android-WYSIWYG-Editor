@@ -4,6 +4,32 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
+    <ImageButton
+        android:id="@+id/action_insert_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:maxHeight="20dp"
+        android:maxWidth="20dp"
+        android:src="@drawable/icon_image" />
+
+    <ImageButton
+        android:id="@+id/action_map"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:maxHeight="20dp"
+        android:maxWidth="20dp"
+        android:src="@drawable/icon_marker" />
+
+    <ImageButton
+        android:id="@+id/action_hr"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:maxHeight="20dp"
+        android:maxWidth="20dp"
+        android:src="@drawable/icon_hr" />
 
     <Button
         android:id="@+id/action_h1"
@@ -69,16 +95,6 @@
         android:src="@drawable/icon_indent" />
 
     <ImageButton
-        android:id="@+id/action_outdent"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:maxHeight="20dp"
-        android:maxWidth="20dp"
-        android:src="@drawable/icon_outdent" />
-
-
-    <ImageButton
         android:id="@+id/action_bulleted"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -97,25 +113,6 @@
         android:src="@drawable/icon_numbered_list" />
 
     <ImageButton
-        android:id="@+id/action_hr"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:maxHeight="20dp"
-        android:maxWidth="20dp"
-        android:src="@drawable/icon_hr" />
-
-    <ImageButton
-        android:id="@+id/action_insert_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:maxHeight="20dp"
-        android:maxWidth="20dp"
-        android:src="@drawable/icon_image" />
-
-
-    <ImageButton
         android:id="@+id/action_insert_link"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -124,14 +121,6 @@
         android:maxWidth="20dp"
         android:src="@drawable/icon_link" />
 
-    <ImageButton
-        android:id="@+id/action_map"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:maxHeight="20dp"
-        android:maxWidth="20dp"
-        android:src="@drawable/icon_marker" />
 
     <ImageButton
         android:id="@+id/action_erase"

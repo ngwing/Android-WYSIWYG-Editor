@@ -55,12 +55,15 @@
                 android:layout_width="match_parent"
                 android:id="@+id/editor"
                 app:render_type="Editor"
-                app:placeholder="Start writing here..."
+                app:placeholder="写点什么..."
                 android:paddingTop="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_height="match_parent"
                 android:paddingBottom="100dp"
+                app:imageDescriptionHint="图片描述(可选)"
+                app:uploadingHint="正在上传..."
+                app:uploadSuccessHint="上传成功！"
                 >
 
             </com.github.irshulx.Editor>

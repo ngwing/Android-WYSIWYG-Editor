@@ -253,10 +253,10 @@ public class EditorCore extends LinearLayout {
     /**
      * determine target index for the next insert,
      *
-     * @param type
+     * @param nextType
      * @return
      */
-    public int determineIndex(EditorType type) {
+    public int determineIndex(EditorType nextType) {
         int size = this.__parentView.getChildCount();
         if (this.__renderType == RenderType.Renderer)
             return size;
@@ -264,15 +264,15 @@ public class EditorCore extends LinearLayout {
         if (_view == null)
             return size;
         int currentIndex = this.__parentView.indexOfChild(_view);
-        EditorType tag = getControlType(_view);
-        if (tag == EditorType.INPUT) {
+        EditorType activeType = getControlType(_view);
+        if (activeType == EditorType.INPUT) {
             int length = ((EditText) this.__activeView).getText().length();
             if (length > 0) {
-                return type == EditorType.UL_LI || type == EditorType.OL_LI ? currentIndex : currentIndex;
+                return nextType == EditorType.UL_LI || nextType == EditorType.OL_LI ? currentIndex : (currentIndex + 1);
             } else {
                 return currentIndex;
             }
-        } else if (tag == EditorType.UL_LI || tag == EditorType.OL_LI) {
+        } else if (activeType == EditorType.UL_LI || activeType == EditorType.OL_LI) {
             EditText _text = (EditText) _view.findViewById(R.id.txtText);
             if (_text.getText().length() > 0) {
 
@@ -314,6 +314,8 @@ public class EditorCore extends LinearLayout {
         if (_view == null)
             return null;
         EditorControl _control = (EditorControl) _view.getTag();
+        if (_control == null)
+            return null;
         return _control.Type;
     }
 
