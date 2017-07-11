@@ -39,13 +39,13 @@ public class DividerExtensions {
         this.dividerLayout = layout;
     }
 
-    public void insertDivider() {
+    public View insertDivider() {
         View view = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.dividerLayout, null);
         view.setTag(editorCore.createTag(ControlType.hr));
         int index = editorCore.determineIndex(ControlType.hr);
         if (index == 0) {
             Toast.makeText(editorCore.getContext(), editorCore.firstLineWarningHint, Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
         editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(view, index);
@@ -59,6 +59,8 @@ public class DividerExtensions {
 //             */
 //            setFocusToNearbyEditText(index+1);
         }
+//        editorCore.getEditorListener().onUpload();
+        return view;
     }
 
     public boolean deleteHr(int indexOfDeleteItem) {

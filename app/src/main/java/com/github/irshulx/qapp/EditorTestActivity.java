@@ -2,6 +2,7 @@ package com.github.irshulx.qapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,9 +14,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.github.irshulx.Editor;
@@ -23,18 +26,27 @@ import com.github.irshulx.EditorListener;
 import com.github.irshulx.models.EditorTextStyle;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EditorTestActivity extends AppCompatActivity {
     Editor editor;
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor_test);
         editor = (Editor) findViewById(R.id.editor);
+        scrollView = (ScrollView) findViewById(R.id.scroll_view);
         setUpEditor();
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     private void setUpEditor() {
@@ -97,7 +109,11 @@ public class EditorTestActivity extends AppCompatActivity {
         findViewById(R.id.action_hr).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.insertDivider();
+                View view = editor.insertDivider();
+                if (view == null)
+                    return;
+                int height = dip2px(getApplicationContext(), 32);
+                scrollView.scrollBy(0, height);
             }
         });
 

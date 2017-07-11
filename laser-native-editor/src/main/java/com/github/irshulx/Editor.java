@@ -206,8 +206,8 @@ public class Editor extends EditorCore {
         this.getDividerExtensions().setDividerLayout(layout);
     }
 
-    public void insertDivider() {
-        getDividerExtensions().insertDivider();
+    public View insertDivider() {
+        return getDividerExtensions().insertDivider();
     }
 
         /*

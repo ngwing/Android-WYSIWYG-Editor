@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -25,18 +24,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/white"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_height="match_parent">
+        android:background="@color/white">
 
 
         <!-- Begin Editor toolbar -->
 
-        <HorizontalScrollView android:id="@+id/tools"
+        <HorizontalScrollView
+            android:id="@+id/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#e6e6e6"
             android:layout_alignParentBottom="true"
+            android:background="#e6e6e6"
             android:scrollbars="none">
 
             <include layout="@layout/editor_toolbar_linearlayout_horizontal" />
@@ -45,26 +45,26 @@
         </HorizontalScrollView>
         <!--End of Editor toolbar -->
         <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:scrollbars="vertical"
-            android:layout_marginBottom="40dp"
-            android:layout_alignParentTop="true"
             android:layout_height="match_parent"
-            >
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="40dp"
+            android:scrollbars="vertical">
+
             <com.github.irshulx.Editor
-                android:layout_width="match_parent"
                 android:id="@+id/editor"
-                app:render_type="Editor"
-                app:placeholder="写点什么..."
-                android:paddingTop="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="100dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
                 app:imageDescriptionHint="图片描述(可选)"
-                app:uploadingHint="正在上传..."
+                app:placeholder="写点什么..."
+                app:render_type="Editor"
                 app:uploadSuccessHint="上传成功！"
-                >
+                app:uploadingHint="正在上传...">
 
             </com.github.irshulx.Editor>
         </ScrollView>
