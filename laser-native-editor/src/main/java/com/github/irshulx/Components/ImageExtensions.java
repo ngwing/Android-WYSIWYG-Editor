@@ -22,10 +22,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -76,6 +78,9 @@ public class ImageExtensions {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView lblStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
+        lblStatus.setText(editorCore.uploadingHint);
+        EditText desc = (EditText) childLayout.findViewById(R.id.desc);
+        desc.setHint(editorCore.imageDescriptionHint);
         imageView.setImageBitmap(image);
         final String uuid = generateUUID();
         BindEvents(childLayout);

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="editor">
-        <attr name="render_type" format="string"/>
-        <attr name="placeholder" format="string"/>
+        <attr name="render_type" format="string|reference" />
+        <attr name="placeholder" format="string|reference" />
+        <attr name="imageDescriptionHint" format="string|reference" />
+        <attr name="uploadingHint" format="string|reference" />
     </declare-styleable>
 </resources>

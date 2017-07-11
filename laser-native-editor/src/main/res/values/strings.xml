@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="uploading_hint">Uploading...</string>
+    <string name="image_description_hint">Descrition here(optional)</string>
     <string name="app_name">Editor</string>
     <string name="fontFamily__serif">serif</string>
     <string name="fontFamily__sans_serif">sans-serif</string>

@@ -47,6 +47,8 @@ public class EditorCore extends LinearLayout {
     * EditText initializors
     */
     public String placeHolder = null;
+    public String imageDescriptionHint = null;
+    public String uploadingHint = null;
     /*
     * Divider initializors
     */
@@ -214,6 +216,12 @@ public class EditorCore extends LinearLayout {
         try {
             a = getContext().obtainStyledAttributes(attributeSet, R.styleable.editor);
             this.placeHolder = a.getString(R.styleable.editor_placeholder);
+            this.imageDescriptionHint = a.getString(R.styleable.editor_placeholder);
+            if(imageDescriptionHint == null || imageDescriptionHint.trim().length() == 0)
+                imageDescriptionHint = __context.getString(R.string.image_description_hint);
+            this.uploadingHint = a.getString(R.styleable.editor_uploadingHint);
+            if(uploadingHint == null || uploadingHint.trim().length() == 0)
+                uploadingHint = __context.getString(R.string.uploading_hint);
             String renderType = a.getString(R.styleable.editor_render_type);
             if (TextUtils.isEmpty(renderType)) {
                 this.__renderType = com.github.irshulx.models.RenderType.Editor;
