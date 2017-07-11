@@ -47,6 +47,7 @@ public class DividerExtensions {
             Toast.makeText(editorCore.getContext(), editorCore.firstLineWarningHint, Toast.LENGTH_SHORT).show();
             return;
         }
+        editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(view, index);
         if (editorCore.isLastRow(view) && editorCore.getRenderType() == RenderType.Editor) {
             //check if ul is active
@@ -64,7 +65,7 @@ public class DividerExtensions {
         View view = editorCore.getParentView().getChildAt(indexOfDeleteItem);
 //        if(view == null)
 //            return true;
-        if (view == null ||editorCore.getControlType(view) == ControlType.hr) {
+        if (view == null || editorCore.getControlType(view) == ControlType.hr) {
             editorCore.getParentView().removeView(view);
             return true;
         }

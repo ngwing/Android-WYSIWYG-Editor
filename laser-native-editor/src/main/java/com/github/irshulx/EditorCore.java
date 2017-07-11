@@ -661,6 +661,15 @@ public class EditorCore extends LinearLayout {
         return false;
     }
 
+    public void showNextInputHint(int index) {
+        View view = getParentView().getChildAt(index);
+        ControlType type = getControlType(view);
+        if (type != ControlType.INPUT)
+            return;
+        TextView tv = (TextView) view;
+        tv.setHint(placeHolder);
+    }
+
     public class Utilities {
         public int[] getScreenDimension() {
             Display display = ((Activity) __context).getWindowManager().getDefaultDisplay();

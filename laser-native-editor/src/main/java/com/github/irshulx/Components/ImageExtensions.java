@@ -86,7 +86,7 @@ public class ImageExtensions {
         if (index == -1) {
             index = editorCore.determineIndex(ControlType.img);
         }
-        showNextInputHint(index);
+        editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(childLayout, index);
 
         //      _Views.add(childLayout);
@@ -101,14 +101,6 @@ public class ImageExtensions {
         editorCore.getEditorListener().onUpload(image, uuid);
     }
 
-    private void showNextInputHint(int index) {
-        View view = editorCore.getParentView().getChildAt(index);
-        ControlType type = editorCore.getControlType(view);
-        if (type != ControlType.INPUT)
-            return;
-        TextView tv = (TextView) view;
-        tv.setHint(editorCore.placeHolder);
-    }
 
     private void hideInputHint(int index) {
         View view = editorCore.getParentView().getChildAt(index);
