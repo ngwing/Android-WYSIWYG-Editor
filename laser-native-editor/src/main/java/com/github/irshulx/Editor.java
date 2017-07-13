@@ -71,10 +71,6 @@ public class Editor extends EditorCore {
         super.renderEditor(_state);
     }
 
-    public void renderHtml(String htmlString) {
-        renderEditorFromHtml(htmlString);
-    }
-
     public void render() {
         if (getRenderType() == RenderType.Editor) {
             getInputExtensions().insertEditText(0, this.placeHolder, null);
@@ -144,7 +140,7 @@ public class Editor extends EditorCore {
 
 
     public void updateTextStyle(EditorTextStyle style) {
-        getInputExtensions().UpdateTextStyle(style, null);
+        getInputExtensions().updateTextStyle(style, null);
     }
 
     public void insertLink() {

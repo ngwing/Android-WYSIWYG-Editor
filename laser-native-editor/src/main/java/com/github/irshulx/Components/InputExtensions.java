@@ -125,14 +125,14 @@ public class InputExtensions {
         this.editorCore = editorCore;
     }
 
-    CharSequence GetSanitizedHtml(String text) {
+    CharSequence getSanitizedHtml(String text) {
         Spanned __ = Html.fromHtml(text);
         CharSequence toReplace = noTrailingwhiteLines(__);
         return toReplace;
     }
 
     public void setText(TextView textView, String text) {
-        CharSequence toReplace = GetSanitizedHtml(text);
+        CharSequence toReplace = getSanitizedHtml(text);
         textView.setText(toReplace);
     }
 
@@ -273,7 +273,7 @@ public class InputExtensions {
     }
 
 
-    private EditorControl reWriteTags(EditorControl tag, EditorTextStyle styleToAdd) {
+    private EditorControl rewriteTags(EditorControl tag, EditorTextStyle styleToAdd) {
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H2, Op.Delete);
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H3, Op.Delete);
@@ -311,11 +311,11 @@ public class InputExtensions {
             if (editorCore.containsStyle(editorControl._ControlStyles, editorTextStyle)) {
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
                 editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
-                tag = reWriteTags(editorControl, EditorTextStyle.NORMAL);
+                tag = rewriteTags(editorControl, EditorTextStyle.NORMAL);
             } else {
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getTextStyleFromStyle(editorTextStyle));
                 editText.setTypeface(getTypeface(HEADING, Typeface.BOLD));
-                tag = reWriteTags(editorControl, editorTextStyle);
+                tag = rewriteTags(editorControl, editorTextStyle);
             }
             editText.setTag(tag);
         }
@@ -371,7 +371,7 @@ public class InputExtensions {
         editText.setTag(tag);
     }
 
-    public void UpdateTextStyle(EditorTextStyle style, TextView editText) {
+    public void updateTextStyle(EditorTextStyle style, TextView editText) {
         /// String type = getControlType(getActiveView());
         try {
             if (editText == null) {

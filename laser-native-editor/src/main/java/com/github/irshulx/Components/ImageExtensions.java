@@ -98,7 +98,7 @@ public class ImageExtensions {
         childLayout.setTag(control);
         childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
         lblStatus.setVisibility(View.VISIBLE);
-        editorCore.getEditorListener().onUpload(image, uuid);
+        editorCore.onUpload(image, uuid);
     }
 
 

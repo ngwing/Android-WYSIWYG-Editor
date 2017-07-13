@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 
 /**
  * Created by mkallingal on 5/25/2016.
@@ -27,6 +28,11 @@ public class HTMLExtensions {
     }
 
     public void parseHtml(String htmlString) {
+        parseHtmlNode(htmlString);
+        editorCore.getInputExtensions().insertEditText(editorCore.getParentChildCount(), null, null);
+    }
+
+    private void parseHtmlNode(String htmlString) {
         Document doc = Jsoup.parse(htmlString);
         for (Element element : doc.body().children()) {
             if (!matchesTag(element.tagName()))
@@ -36,9 +42,8 @@ public class HTMLExtensions {
     }
 
     private void buildNode(Element element) {
-        String text;
+        String html;
         HtmlTag tag = HtmlTag.valueOf(element.tagName().toLowerCase());
-        Log.d("buildNode", "tag : " + tag.name());
         int count = editorCore.getParentView().getChildCount();
 //        if ("<br>".equals(element.html().replaceAll("\\s+", "")) || "<br/>".equals(element.html().replaceAll("\\s+", ""))) {
 //            editorCore.getInputExtensions().insertEditText(count, null, null);
@@ -60,8 +65,7 @@ public class HTMLExtensions {
                 renderHeader(tag, element);
                 break;
             case p:
-                text = element.html();
-                editorCore.getInputExtensions().insertEditText(count, null, text);
+                parseParagraph(element);
                 break;
             case ul:
             case ol:
@@ -71,9 +75,43 @@ public class HTMLExtensions {
                 renderImage(element);
                 break;
             case div:
-                text = element.html();
-                parseHtml(text);
+                html = element.html();
+                parseHtml(html);
                 break;
+        }
+    }
+
+
+    private boolean hasChild(Element element) {
+        Elements children = element.children();
+        return children != null && children.size() > 0;
+    }
+
+    private void parseParagraph(Element element) {
+
+        boolean hasChild = hasChild(element);
+
+        if (!hasChild) {
+            editorCore.getInputExtensions().insertEditText(editorCore.getParentChildCount(), null, element.html());
+            return;
+        }
+
+        if (hasChild) {
+            Element child = element.child(0);
+            HtmlTag tag = HtmlTag.valueOf(child.tagName().toLowerCase());
+            switch (tag) {
+                case p:
+                    parseParagraph(child);
+                    break;
+                case b:
+                    parseParagraph(child);
+                    editorCore.getInputExtensions().updateTextStyle(EditorTextStyle.BOLD, null);
+                    break;
+                case i:
+                    parseParagraph(child);
+                    editorCore.getInputExtensions().updateTextStyle(EditorTextStyle.ITALIC, null);
+                    break;
+            }
         }
     }
 
@@ -100,7 +138,7 @@ public class HTMLExtensions {
         String text = getHtmlSpan(element);
         TextView editText = editorCore.getInputExtensions().insertEditText(count, null, text);
         EditorTextStyle style = tag == HtmlTag.h1 ? EditorTextStyle.H1 : tag == HtmlTag.h2 ? EditorTextStyle.H2 : EditorTextStyle.H3;
-        editorCore.getInputExtensions().UpdateTextStyle(style, editText);
+        editorCore.getInputExtensions().updateTextStyle(style, editText);
     }
 
     private String getHtmlSpan(Element element) {

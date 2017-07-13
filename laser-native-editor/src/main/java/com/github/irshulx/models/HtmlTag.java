@@ -10,5 +10,7 @@ public enum HtmlTag{
     img,
     hr,
     div,
-    p
+    p,
+    b,
+    i
 }
