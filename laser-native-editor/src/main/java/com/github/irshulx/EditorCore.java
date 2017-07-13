@@ -76,12 +76,12 @@ public class EditorCore extends LinearLayout {
     private HTMLExtensions htmlExtensions;
     private MapExtensions mapExtensions;
 
-    public EditorCore(Context _context, AttributeSet attrs) {
-        super(_context, attrs);
-        this.context = _context;
-        this.activity = (Activity) _context;
+    public EditorCore(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        this.activity = (Activity) context;
         this.setOrientation(VERTICAL);
-        initialize(_context, attrs);
+        initialize(context, attrs);
     }
 
     private void initialize(Context context, AttributeSet attrs) {
@@ -160,14 +160,6 @@ public class EditorCore extends LinearLayout {
         return this.activeView;
     }
 
-
-    public void trace() {
-        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-        for (StackTraceElement stackTraceElement : traces) {
-            Log.d("Trace", stackTraceElement.toString());
-        }
-    }
-
     public void setActiveView(View view) {
         this.activeView = view;
     }
@@ -180,8 +172,8 @@ public class EditorCore extends LinearLayout {
         return this.listener;
     }
 
-    public void setEditorListener(EditorListener _listener) {
-        this.listener = _listener;
+    public void setEditorListener(EditorListener listener) {
+        this.listener = listener;
     }
 
     /*
@@ -275,11 +267,11 @@ public class EditorCore extends LinearLayout {
         int size = this.parentView.getChildCount();
         if (this.renderType == RenderType.Renderer)
             return size;
-        View _view = this.activeView;
-        if (_view == null)
+        View view = this.activeView;
+        if (view == null)
             return size;
-        int currentIndex = this.parentView.indexOfChild(_view);
-        ControlType activeType = getControlType(_view);
+        int currentIndex = this.parentView.indexOfChild(view);
+        ControlType activeType = getControlType(view);
         if (activeType == ControlType.INPUT) {
             int length = ((EditText) this.activeView).getText().length();
             if (length > 0) {
@@ -288,8 +280,8 @@ public class EditorCore extends LinearLayout {
                 return currentIndex;
             }
         } else if (activeType == ControlType.UL_LI || activeType == ControlType.OL_LI) {
-            EditText _text = (EditText) _view.findViewById(R.id.txtText);
-            if (_text.getText().length() > 0) {
+            EditText edittext = (EditText) view.findViewById(R.id.txtText);
+            if (edittext.getText().length() > 0) {
 
             }
             return size;
@@ -298,8 +290,8 @@ public class EditorCore extends LinearLayout {
         }
     }
 
-    public boolean containsStyle(List<EditorTextStyle> _Styles, EditorTextStyle style) {
-        for (EditorTextStyle item : _Styles) {
+    public boolean containsStyle(List<EditorTextStyle> styles, EditorTextStyle style) {
+        for (EditorTextStyle item : styles) {
             if (item == style) {
                 return true;
             }
@@ -308,9 +300,9 @@ public class EditorCore extends LinearLayout {
         return false;
     }
 
-    public EditorControl updateTagStyle(EditorControl controlTag, EditorTextStyle style, Op _op) {
+    public EditorControl updateTagStyle(EditorControl controlTag, EditorTextStyle style, Op op) {
         List<EditorTextStyle> styles = controlTag._ControlStyles;
-        if (_op == Op.Delete) {
+        if (op == Op.Delete) {
             int index = styles.indexOf(style);
             if (index != -1) {
                 styles.remove(index);
@@ -325,13 +317,13 @@ public class EditorCore extends LinearLayout {
         return controlTag;
     }
 
-    public ControlType getControlType(View _view) {
-        if (_view == null)
+    public ControlType getControlType(View view) {
+        if (view == null)
             return null;
-        EditorControl _control = (EditorControl) _view.getTag();
-        if (_control == null)
+        EditorControl control = (EditorControl) view.getTag();
+        if (control == null)
             return null;
-        return _control.type;
+        return control.type;
     }
 
     public EditorControl getControlTag(View view) {
@@ -470,14 +462,14 @@ public class EditorCore extends LinearLayout {
     }
 
     public String getValue(String Key, String defaultVal) {
-        SharedPreferences _Preferences = context.getSharedPreferences(SHAREDPREFERENCE, 0);
-        return _Preferences.getString(Key, defaultVal);
+        SharedPreferences preferences = context.getSharedPreferences(SHAREDPREFERENCE, 0);
+        return preferences.getString(Key, defaultVal);
 
     }
 
     public void putValue(String Key, String Value) {
-        SharedPreferences _Preferences = context.getSharedPreferences(SHAREDPREFERENCE, 0);
-        SharedPreferences.Editor editor = _Preferences.edit();
+        SharedPreferences preferences = context.getSharedPreferences(SHAREDPREFERENCE, 0);
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Key, Value);
         editor.apply();
     }
@@ -496,8 +488,8 @@ public class EditorCore extends LinearLayout {
         return Deserialized;
     }
 
-    public String serializeContent(EditorContent _state) {
-        String serialized = gson.toJson(_state);
+    public String serializeContent(EditorContent content) {
+        String serialized = gson.toJson(content);
         return serialized;
     }
 
@@ -519,10 +511,10 @@ public class EditorCore extends LinearLayout {
             node.content = new ArrayList<>();
             switch (type) {
                 case INPUT:
-                    EditText _text = (EditText) view;
+                    EditText edittext = (EditText) view;
                     EditorControl tag = (EditorControl) view.getTag();
                     node.contentStyles = tag._ControlStyles;
-                    node.content.add(Html.toHtml(_text.getText()));
+                    node.content.add(Html.toHtml(edittext.getText()));
                     list.add(node);
                     break;
                 case img:
@@ -541,8 +533,8 @@ public class EditorCore extends LinearLayout {
                 case ul:
                 case ol:
                     TableLayout table = (TableLayout) view;
-                    int _rowCount = table.getChildCount();
-                    for (int j = 0; j < _rowCount; j++) {
+                    int rowCount = table.getChildCount();
+                    for (int j = 0; j < rowCount; j++) {
                         View row = table.getChildAt(j);
                         EditText li = (EditText) row.findViewById(R.id.txtText);
                         node.content.add(Html.toHtml(li.getText()));
@@ -584,12 +576,12 @@ public class EditorCore extends LinearLayout {
                     break;
                 case ul:
                 case ol:
-                    TableLayout _layout = null;
+                    TableLayout layout = null;
                     for (int i = 0; i < item.content.size(); i++) {
                         if (i == 0) {
-                            _layout = listItemExtensions.insertList(content.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
+                            layout = listItemExtensions.insertList(content.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
                         } else {
-                            listItemExtensions.AddListItem(_layout, item.type == ControlType.ol, item.content.get(i));
+                            listItemExtensions.AddListItem(layout, item.type == ControlType.ol, item.content.get(i));
                         }
                     }
                     break;
