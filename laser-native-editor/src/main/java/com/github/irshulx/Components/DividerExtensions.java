@@ -17,6 +17,7 @@ package com.github.irshulx.Components;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.irshulx.R;
@@ -41,7 +42,9 @@ public class DividerExtensions {
 
     public View insertDivider() {
         View view = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.dividerLayout, null);
+        View divider = view.findViewById(R.id.divider);
         view.setTag(editorCore.createTag(ControlType.hr));
+        setMarginHorizontal(divider, editorCore.dividerMargin);
         int index = editorCore.determineIndex(ControlType.hr);
         if (index == 0) {
             Toast.makeText(editorCore.getContext(), editorCore.firstLineWarningHint, Toast.LENGTH_SHORT).show();
@@ -61,6 +64,24 @@ public class DividerExtensions {
         }
 //        editorCore.getEditorListener().onUpload();
         return view;
+    }
+
+    public boolean setMarginHorizontal(View view, int marginHorizontal) {
+        if (view == null)
+            return false;
+        ViewGroup.MarginLayoutParams marginParams = null;
+        try {
+            marginParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        } catch (ClassCastException e) {
+            return false;
+        }
+
+        if (marginParams == null)
+            return false;
+        marginParams.leftMargin = marginHorizontal;
+        marginParams.rightMargin = marginHorizontal;
+        view.setLayoutParams(marginParams);
+        return true;
     }
 
     public boolean deleteHr(int indexOfDeleteItem) {

@@ -50,6 +50,7 @@ public class EditorTestActivity extends AppCompatActivity {
     }
 
     private void setUpEditor() {
+        editor.dividerMargin = 100;
         findViewById(R.id.action_h1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +163,17 @@ public class EditorTestActivity extends AppCompatActivity {
 
             @Override
             public void onUpload(Bitmap image, String uuid) {
-                Toast.makeText(EditorTestActivity.this, uuid, Toast.LENGTH_LONG).show();
+//                Toast.makeText(EditorTestActivity.this, uuid, Toast.LENGTH_LONG).show();
+
+//                if (view == null)
+//                    return;
+                int height = image.getHeight();
+                int width = image.getWidth();
+                int targetWidth = 980 /3 * 4;
+                int targetHeight = height/ width * targetWidth;
+                scrollView.scrollBy(0, targetHeight);
+
+
                 editor.onImageUploadComplete("http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg", uuid);
                 // editor.onImageUploadFailed(uuid);
             }

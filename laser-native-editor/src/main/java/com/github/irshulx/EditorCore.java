@@ -52,6 +52,7 @@ public class EditorCore extends LinearLayout {
     public String uploadSuccessHint = null;
     public String uploadFailHint = null;
     public String firstLineWarningHint = null;
+    public int dividerMargin = 0;
     /*
     * Divider initializors
     */
