@@ -20,10 +20,11 @@ public class RenderTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_render_test);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        String serialized= getIntent().getStringExtra("content");
+        String serialized = getIntent().getStringExtra("content");
+        String html = getIntent().getStringExtra("html");
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new RendererPagerAdapter(getSupportFragmentManager(),
-                RenderTestActivity.this,serialized));
+                RenderTestActivity.this, serialized, html));
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);

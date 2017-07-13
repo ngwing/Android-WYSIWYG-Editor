@@ -189,6 +189,7 @@ public class EditorTestActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), RenderTestActivity.class);
                 intent.putExtra("content", text);
                 String html = editor.getContentAsHTML();
+                intent.putExtra("html", html);
                 editor.render();
                 Log.d("html", html);
                 startActivity(intent);

@@ -15,18 +15,20 @@ import com.github.irshulx.qapp.SerializedFragment;
 public class RendererPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
     final String content;
+    final String html;
     private String tabTitles[] = new String[] { "Rendered", "Serialized", "HTML" };
     private Context context;
-    public RendererPagerAdapter(FragmentManager fm, Context context,String content) {
+    public RendererPagerAdapter(FragmentManager fm, Context context,String content, String html) {
         super(fm);
         this.context = context;
         this.content= content;
+        this.html = html;
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return PreviewFragment.newInstance(content);
+            return PreviewFragment.newInstance(content, html);
         }else if(position==1){
             return SerializedFragment.newInstance(content);
         }else{

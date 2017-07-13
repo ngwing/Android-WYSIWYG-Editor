@@ -204,11 +204,6 @@ public class EditorCore extends LinearLayout {
     public DividerExtensions getDividerExtensions() {
         return this.dividerExtensions;
     }
-/*
- *
- *
- *
- */
 
     //endregion
 
