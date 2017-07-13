@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,10 +28,10 @@ import com.github.irshulx.Components.ImageExtensions;
 import com.github.irshulx.Components.InputExtensions;
 import com.github.irshulx.Components.ListItemExtensions;
 import com.github.irshulx.Components.MapExtensions;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.Node;
 import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
@@ -157,6 +158,14 @@ public class EditorCore extends LinearLayout {
      */
     public View getActiveView() {
         return this.activeView;
+    }
+
+
+    public void trace() {
+        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+        for (StackTraceElement stackTraceElement : traces) {
+            Log.d("Trace", stackTraceElement.toString());
+        }
     }
 
     public void setActiveView(View view) {
@@ -391,6 +400,7 @@ public class EditorCore extends LinearLayout {
         }
 
         if (previousType == ControlType.INPUT) {
+            Log.d("previousType", "deleteFocusedPrevious removeParent");
             removeParent(view);
             return;
         }
@@ -416,18 +426,16 @@ public class EditorCore extends LinearLayout {
         tv.setHint(hint);
     }
 
-    public int removeParent(View view) {
+    public int removeParent(final View view) {
         int indexOfDeleteItem = parentView.indexOfChild(view);
         View nextItem = null;
         //remove hr if its on top of the delete field
-        this.parentView.removeView(view);
         checkInputHint(indexOfDeleteItem);
-//        Log.d("indexOfDeleteItem", "indexOfDeleteItem : " + indexOfDeleteItem);
 //        if (dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
 //            indexOfDeleteItem -= 1;
 
-        if (view != this.activeView)
-            return indexOfDeleteItem;
+//        if (view != this.activeView)
+//            return indexOfDeleteItem;
 
         for (int i = 0; i < indexOfDeleteItem; i++) {
             if (getControlType(parentView.getChildAt(i)) == ControlType.INPUT) {
@@ -437,11 +445,18 @@ public class EditorCore extends LinearLayout {
         }
         if (nextItem != null) {
             CustomEditText text = (CustomEditText) nextItem;
-            if (text.requestFocus()) {
+            if (text.requestFocusFromTouch()) {
                 text.setSelection(text.getText().length());
             }
             this.activeView = nextItem;
         }
+
+        this.parentView.post(new Runnable() {
+            @Override
+            public void run() {
+                parentView.removeView(view);
+            }
+        });
         return indexOfDeleteItem;
     }
 
