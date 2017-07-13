@@ -1,5 +1,6 @@
 package com.github.irshulx.Components;
 
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -36,43 +37,53 @@ public class HTMLExtensions {
 
     private void buildNode(Element element) {
         String text;
-        TextView editText;
         HtmlTag tag = HtmlTag.valueOf(element.tagName().toLowerCase());
+        Log.d("buildNode", "tag : " + tag.name());
         int count = editorCore.getParentView().getChildCount();
-        if ("<br>".equals(element.html().replaceAll("\\s+", "")) || "<br/>".equals(element.html().replaceAll("\\s+", ""))) {
-            editorCore.getInputExtensions().insertEditText(count, null, null);
-            return;
-        } else if ("<hr>".equals(element.html().replaceAll("\\s+", "")) || "<hr/>".equals(element.html().replaceAll("\\s+", ""))) {
-            editorCore.getDividerExtensions().insertDivider();
-            return;
-        }
+//        if ("<br>".equals(element.html().replaceAll("\\s+", "")) || "<br/>".equals(element.html().replaceAll("\\s+", ""))) {
+//            editorCore.getInputExtensions().insertEditText(count, null, null);
+//            return;
+//        } else if ("<hr>".equals(element.html().replaceAll("\\s+", "")) || "<hr/>".equals(element.html().replaceAll("\\s+", ""))) {
+//            editorCore.getDividerExtensions().insertDivider();
+//            return;
+//        }
         switch (tag) {
+            case br:
+                editorCore.getInputExtensions().insertEditText(count, null, null);
+                break;
+            case hr:
+                editorCore.getDividerExtensions().insertDivider();
+                break;
             case h1:
             case h2:
             case h3:
-                RenderHeader(tag, element);
+                renderHeader(tag, element);
                 break;
             case p:
                 text = element.html();
-                editText = editorCore.getInputExtensions().insertEditText(count, null, text);
+                editorCore.getInputExtensions().insertEditText(count, null, text);
                 break;
             case ul:
             case ol:
-                RenderList(tag == HtmlTag.ol, element);
+                renderList(tag == HtmlTag.ol, element);
                 break;
             case img:
-                RenderImage(element);
+                renderImage(element);
+                break;
+            case div:
+                text = element.html();
+                parseHtml(text);
                 break;
         }
     }
 
-    private void RenderImage(Element element) {
+    private void renderImage(Element element) {
         String src = element.attr("src");
         int Index = editorCore.getParentChildCount();
         editorCore.getImageExtensions().executeDownloadImageTask(src, Index);
     }
 
-    private void RenderList(boolean isOrdered, Element element) {
+    private void renderList(boolean isOrdered, Element element) {
         if (element.children().size() > 0) {
             Element li = element.child(0);
             String text = getHtmlSpan(li);
@@ -84,7 +95,7 @@ public class HTMLExtensions {
         }
     }
 
-    private void RenderHeader(HtmlTag tag, Element element) {
+    private void renderHeader(HtmlTag tag, Element element) {
         int count = editorCore.getParentView().getChildCount();
         String text = getHtmlSpan(element);
         TextView editText = editorCore.getInputExtensions().insertEditText(count, null, text);

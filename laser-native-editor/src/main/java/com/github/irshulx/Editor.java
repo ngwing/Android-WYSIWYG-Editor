@@ -71,8 +71,8 @@ public class Editor extends EditorCore {
         super.renderEditor(_state);
     }
 
-    public void render(String HtmlString) {
-        renderEditorFromHtml(HtmlString);
+    public void renderHtml(String htmlString) {
+        renderEditorFromHtml(htmlString);
     }
 
     public void render() {

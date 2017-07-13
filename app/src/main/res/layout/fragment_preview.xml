@@ -1,73 +1,72 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.github.irshulx.qapp.PreviewFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:scrollbarStyle="insideOverlay"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbarStyle="insideOverlay">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <android.support.v7.widget.CardView
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                card_view:cardUseCompatPadding="true"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingBottom="30dp"
                 card_view:cardCornerRadius="3dp"
                 card_view:cardElevation="3dp"
-                android:paddingBottom="30dp">
+                card_view:cardUseCompatPadding="true">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="4dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_marginTop="4dp"
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:paddingTop="4dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:paddingBottom="4dp"
-                        android:layout_height="wrap_content">
-                    </LinearLayout>
+                        android:paddingTop="4dp"></LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
                             android:id="@+id/body"
-                            android:orientation="vertical"
-                            android:layout_height="wrap_content">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
                             <com.github.irshulx.Editor
-                                android:layout_width="match_parent"
                                 android:id="@+id/renderer"
-                                app:render_type="Renderer"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:paddingBottom="10dp"
-                                />
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                app:render_type="Renderer" />
                         </LinearLayout>
 
 
                     </RelativeLayout>
 
 
-
-
                 </LinearLayout>
             </android.support.v7.widget.CardView>
-
-
 
 
         </LinearLayout>

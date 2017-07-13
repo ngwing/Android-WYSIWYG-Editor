@@ -50,7 +50,7 @@ public class EditorTestActivity extends AppCompatActivity {
     }
 
     private void setUpEditor() {
-        editor.dividerMargin = 100;
+//        editor.dividerMargin = 100;
         findViewById(R.id.action_h1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,6 +188,9 @@ public class EditorTestActivity extends AppCompatActivity {
                 String text = editor.getContentAsSerialized();
                 Intent intent = new Intent(getApplicationContext(), RenderTestActivity.class);
                 intent.putExtra("content", text);
+                String html = editor.getContentAsHTML();
+                editor.render();
+                Log.d("html", html);
                 startActivity(intent);
             }
         });

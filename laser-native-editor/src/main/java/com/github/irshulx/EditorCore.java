@@ -244,7 +244,7 @@ public class EditorCore extends LinearLayout {
 
             String renderType = a.getString(R.styleable.editor_render_type);
             if (TextUtils.isEmpty(renderType)) {
-                this.__renderType = com.github.irshulx.models.RenderType.Editor;
+                this.__renderType = RenderType.Editor;
             } else {
                 this.__renderType = renderType.toLowerCase().equals("renderer") ? RenderType.Renderer : RenderType.Editor;
             }
@@ -546,9 +546,9 @@ public class EditorCore extends LinearLayout {
         return editorState;
     }
 
-    public void renderEditor(EditorContent _state) {
+    public void renderEditor(EditorContent content) {
         this.__parentView.removeAllViews();
-        for (Node item : _state.nodes) {
+        for (Node item : content.nodes) {
             switch (item.type) {
                 case INPUT:
                     String text = item.content.get(0);
@@ -572,7 +572,7 @@ public class EditorCore extends LinearLayout {
                     TableLayout _layout = null;
                     for (int i = 0; i < item.content.size(); i++) {
                         if (i == 0) {
-                            _layout = __listItemExtensions.insertList(_state.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
+                            _layout = __listItemExtensions.insertList(content.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
                         } else {
                             __listItemExtensions.AddListItem(_layout, item.type == ControlType.ol, item.content.get(i));
                         }
