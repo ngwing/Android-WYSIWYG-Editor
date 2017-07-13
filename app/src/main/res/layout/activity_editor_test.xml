@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:x="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -60,11 +60,11 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                app:imageDescriptionHint="图片描述(可选)"
-                app:placeholder="写点什么..."
-                app:render_type="Editor"
-                app:uploadSuccessHint="上传成功！"
-                app:uploadingHint="正在上传...">
+                x:imageDescriptionHint="图片描述(可选)"
+                x:placeholder="写点什么..."
+                x:render_type="Editor"
+                x:uploadSuccessHint="上传成功！"
+                x:uploadingHint="正在上传...">
 
             </com.github.irshulx.Editor>
         </ScrollView>
