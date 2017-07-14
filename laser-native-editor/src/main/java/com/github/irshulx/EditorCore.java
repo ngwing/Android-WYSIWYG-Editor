@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -400,7 +399,6 @@ public class EditorCore extends LinearLayout {
         }
 
         if (previousType == ControlType.INPUT) {
-            Log.d("previousType", "deleteFocusedPrevious removeParent");
             removeParent(view);
             return;
         }
