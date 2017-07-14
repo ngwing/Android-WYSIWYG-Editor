@@ -10,5 +10,5 @@ public class EditorControl {
     public ControlType type;
     public String path;
     public String Cords;
-    public List<EditorTextStyle> _ControlStyles;
+    public List<EditorTextStyle> controlStyles;
 }

@@ -45,13 +45,6 @@ public class HTMLExtensions {
         String html;
         HtmlTag tag = HtmlTag.valueOf(element.tagName().toLowerCase());
         int count = editorCore.getParentView().getChildCount();
-//        if ("<br>".equals(element.html().replaceAll("\\s+", "")) || "<br/>".equals(element.html().replaceAll("\\s+", ""))) {
-//            editorCore.getInputExtensions().insertEditText(count, null, null);
-//            return;
-//        } else if ("<hr>".equals(element.html().replaceAll("\\s+", "")) || "<hr/>".equals(element.html().replaceAll("\\s+", ""))) {
-//            editorCore.getDividerExtensions().insertDivider();
-//            return;
-//        }
         switch (tag) {
             case br:
                 editorCore.getInputExtensions().insertEditText(count, null, null);

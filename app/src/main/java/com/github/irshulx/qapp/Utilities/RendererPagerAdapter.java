@@ -32,7 +32,7 @@ public class RendererPagerAdapter extends FragmentPagerAdapter {
         }else if(position==1){
             return SerializedFragment.newInstance(content);
         }else{
-            return HTMLRenderedFragment.newInstance(content);
+            return HTMLRenderedFragment.newInstance(html);
         }
     }
 

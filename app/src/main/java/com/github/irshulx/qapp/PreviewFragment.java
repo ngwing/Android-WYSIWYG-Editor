@@ -18,7 +18,6 @@ public class PreviewFragment extends Fragment {
     private static final String SERIALIZED = "SERIALIZED";
     private static final String HTML = "HTML";
 
-    private String mSerialized;
     private String html;
 
     private OnFragmentInteractionListener mListener;
@@ -39,7 +38,6 @@ public class PreviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mSerialized = getArguments().getString(SERIALIZED);
             html = getArguments().getString(HTML);
         }
     }
@@ -53,16 +51,11 @@ public class PreviewFragment extends Fragment {
         Editor editor = (Editor) view.findViewById(R.id.renderer);
         Map<Integer, String> headingTypeface = getHeadingTypeface();
         Map<Integer, String> contentTypeface = getContentface();
-        editor.setHeadingTypeface(headingTypeface);
-        editor.setContentTypeface(contentTypeface);
+//        editor.setHeadingTypeface(headingTypeface);
+//        editor.setContentTypeface(contentTypeface);
         editor.setDividerLayout(R.layout.tmpl_divider_layout);
         editor.setEditorImageLayout(R.layout.tmpl_image_view);
         editor.setListItemLayout(R.layout.tmpl_list_item);
-        String content = mSerialized;
-//        EditorContent dserialized = editor.getContentDeserialized(content);
-//        editor.render(dserialized);
-//        String html = "<p data-tag=\"input\">哈哈哈哈哈哈哈哈哈哈</p><hr data-tag=\"hr\"/><hr data-tag=\"hr\"/><hr data-tag=\"hr\"/><hr data-tag=\"hr\"/><div data-tag=\"img\"><img src=\"http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg\" /><br/></div><p data-tag=\"input\" ><b><i>呵呵红红火火恍恍惚</i></b></p>";
-
         editor.renderHtml(html);
         return view;
     }

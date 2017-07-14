@@ -18,6 +18,7 @@ import com.github.irshulx.Editor;
  */
 public class HTMLRenderedFragment extends Fragment {
     private static final String SERIALIZED = "";
+    private static final String HTML = "html";
 
     // TODO: Rename and change types of parameters
     private String mSerialized;
@@ -30,14 +31,13 @@ public class HTMLRenderedFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param serialized Parameter 1.
      * @return A new instance of fragment PreviewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HTMLRenderedFragment newInstance(String serialized) {
+    public static HTMLRenderedFragment newInstance(String html) {
         HTMLRenderedFragment fragment = new HTMLRenderedFragment();
         Bundle args = new Bundle();
-        args.putString(SERIALIZED, serialized);
+        args.putString(HTML, html);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,8 +47,8 @@ public class HTMLRenderedFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mSerialized = getArguments().getString(SERIALIZED);
-            Editor editor=new Editor(getContext(),null);
-            mSerializedHtml= editor.getContentAsHTML(mSerialized);
+//            mSerialized =
+            mSerializedHtml= getArguments().getString(HTML);
         }
     }
 
