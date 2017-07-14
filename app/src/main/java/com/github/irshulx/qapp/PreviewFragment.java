@@ -74,7 +74,7 @@ public class PreviewFragment extends Fragment {
             }
 
             @Override
-            public void onUpload(Bitmap image, String uuid) {
+            public void onUpload(Bitmap image, Uri uri, String uuid) {
 
             }
 

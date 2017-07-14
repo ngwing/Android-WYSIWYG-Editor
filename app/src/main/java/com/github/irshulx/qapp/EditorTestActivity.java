@@ -187,6 +187,8 @@ public class EditorTestActivity extends AppCompatActivity {
                 int targetHeight = height / width * targetWidth;
                 scrollView.scrollBy(0, targetHeight);
 
+                String path = getPath(uri);
+                Log.d("onActivityResult", "onActivityResult onUpload path : " + path);
 
                 editor.onImageUploadComplete("http://img5.duitang.com/uploads/item/201602/19/20160219121711_TKtAv.jpeg[1200,1132]", uuid);
                 // editor.onImageUploadFailed(uuid);
@@ -276,9 +278,11 @@ public class EditorTestActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == editor.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
-//            Log.d("onActivityResult", "onActivityResult : " + uri);
+            Log.d("onActivityResult", "onActivityResult : " + uri);
 //            try {
+
             String path = getPath(uri);
+            Log.d("onActivityResult", "onActivityResult path : " + path);
 
             Bitmap bitmap = null;
             try {
@@ -306,17 +310,17 @@ public class EditorTestActivity extends AppCompatActivity {
     }
 
     private String getPath(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_ADDED, MediaStore.Images.ImageColumns.SIZE}, null, null,
-                MediaStore.Images.ImageColumns.DATE_ADDED);
+//        Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_ADDED, MediaStore.Images.ImageColumns.SIZE}, null, null,
+//                MediaStore.Images.ImageColumns.DATE_ADDED);
 
-        if (cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.SIZE)) > 1024 * 1) {
-            final String[] split = uri.getPath().split(":");
-            final String[] selectionArgs = new String[]{
-                    split[1]
-            };
-            return getDataColumn(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_id=?", selectionArgs);
-        }
-        return null;
+//        if (cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.SIZE)) > 1024 * 1) {
+        final String[] split = uri.getPath().split(":");
+        final String[] selectionArgs = new String[]{
+                split[1]
+        };
+        return getDataColumn(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_id=?", selectionArgs);
+//        }
+//        return null;
     }
 
     public static String getDataColumn(Context context, Uri uri, String selection,

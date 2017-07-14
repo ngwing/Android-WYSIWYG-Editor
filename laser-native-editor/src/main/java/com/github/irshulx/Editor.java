@@ -78,6 +78,14 @@ public class Editor extends EditorCore {
         }
     }
 
+    public void render(String html) {
+        if (html == null || html.trim().isEmpty()) {
+            render();
+            return;
+        }
+        renderHtml(html);
+    }
+
     private void restoreState() {
         EditorContent state = getStateFromString(null);
         render(state);
