@@ -421,8 +421,10 @@ public class EditorCore extends LinearLayout {
 //        if (dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
 //            indexOfDeleteItem -= 1;
 
-        if (view != this.activeView)
+        if (view != this.activeView) {
+            parentView.removeView(view);
             return indexOfDeleteItem;
+        }
 
         for (int i = 0; i < indexOfDeleteItem; i++) {
             if (getControlType(parentView.getChildAt(i)) == ControlType.INPUT) {
