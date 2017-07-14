@@ -17,6 +17,7 @@ package com.github.irshulx;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -220,8 +221,8 @@ public class Editor extends EditorCore {
         getImageExtensions().openImageGallery();
     }
 
-    public void insertImage(Bitmap bitmap) {
-        getImageExtensions().insertImage(bitmap, -1);
+    public void insertImage(Bitmap bitmap, Uri uri) {
+        getImageExtensions().insertImage(bitmap, uri, -1);
     }
 
     public void onImageUploadComplete(String url, String imageId) {

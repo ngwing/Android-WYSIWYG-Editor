@@ -1,15 +1,19 @@
 package com.github.irshulx.qapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +33,9 @@ import com.github.irshulx.models.EditorTextStyle;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EditorTestActivity extends AppCompatActivity {
@@ -43,6 +49,13 @@ public class EditorTestActivity extends AppCompatActivity {
         editor = (Editor) findViewById(R.id.editor);
         scrollView = (ScrollView) findViewById(R.id.scroll_view);
         setUpEditor();
+//        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
+        }
+//            return;
+//        }
     }
 
     public static int dip2px(Context context, float dpValue) {
@@ -163,15 +176,15 @@ public class EditorTestActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUpload(Bitmap image, String uuid) {
+            public void onUpload(Bitmap image, Uri uri, String uuid) {
 //                Toast.makeText(EditorTestActivity.this, uuid, Toast.LENGTH_LONG).show();
 
 //                if (view == null)
 //                    return;
                 int height = image.getHeight();
                 int width = image.getWidth();
-                int targetWidth = 980 /3 * 4;
-                int targetHeight = height/ width * targetWidth;
+                int targetWidth = 980 / 3 * 4;
+                int targetHeight = height / width * targetWidth;
                 scrollView.scrollBy(0, targetHeight);
 
 
@@ -241,25 +254,92 @@ public class EditorTestActivity extends AppCompatActivity {
 
     }
 
+//    public List<Image> getCurrent() {
+//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                new String[] { MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_ADDED, MediaStore.Images.ImageColumns.SIZE }, null, null,
+//                MediaStore.Images.ImageColumns.DATE_ADDED);
+//        if (cursor == null || !cursor.moveToNext())
+//            return new ArrayList<Image>();
+//        List<Image> photos = new ArrayList<Image>();
+//        cursor.moveToLast();
+//        do {
+//            if (cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.SIZE)) > 1024 * 1) {
+//                Image image = new Image();
+//                image.setUrl(cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)));
+//                photos.add(image);
+//            }
+//        } while (cursor.moveToPrevious());
+//        return photos;
+//    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == editor.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
+//            Log.d("onActivityResult", "onActivityResult : " + uri);
+//            try {
+            String path = getPath(uri);
+
+            Bitmap bitmap = null;
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
-                editor.insertImage(bitmap);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
+            editor.insertImage(bitmap, uri);
+//            } catch (IOException e) {
+//                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+//                e.printStackTrace();
+//            }
+        } else if (resultCode == Activity.RESULT_CANCELED)
+
+        {
             //Write your code if there's no result
             Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT).show();
             // editor.RestoreState();
-        } else if (requestCode == editor.MAP_MARKER_REQUEST) {
+        } else if (requestCode == editor.MAP_MARKER_REQUEST)
+
+        {
             editor.insertMap(data.getStringExtra("cords"));
         }
+
+    }
+
+    private String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_ADDED, MediaStore.Images.ImageColumns.SIZE}, null, null,
+                MediaStore.Images.ImageColumns.DATE_ADDED);
+
+        if (cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.SIZE)) > 1024 * 1) {
+            final String[] split = uri.getPath().split(":");
+            final String[] selectionArgs = new String[]{
+                    split[1]
+            };
+            return getDataColumn(this, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_id=?", selectionArgs);
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
     }
 
     @Override
