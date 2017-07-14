@@ -164,7 +164,7 @@ public class HTMLExtensions {
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" /></div>";
+                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{desc}}\" /></div>";
                 break;
             case map:
                 template = "<div data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
@@ -255,7 +255,7 @@ public class HTMLExtensions {
                     htmlBlock.append(html);
                     break;
                 case img:
-                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", item.content.get(0)));
+                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", item.content.get(0)).replace("{{desc}}", item.content.get(1)));
                     break;
                 case hr:
                     htmlBlock.append(getTemplateHtml(item.type));

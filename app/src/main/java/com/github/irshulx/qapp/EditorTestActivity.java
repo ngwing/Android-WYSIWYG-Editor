@@ -185,7 +185,6 @@ public class EditorTestActivity extends AppCompatActivity {
                 /*
                 Retrieve the content as serialized, you could also say getContentAsHTML();
                 */
-                String text = editor.getContentAsSerialized();
                 Intent intent = new Intent(getApplicationContext(), RenderTestActivity.class);
 //                intent.putExtra("content", text);
                 String html = editor.getContentAsHTML();

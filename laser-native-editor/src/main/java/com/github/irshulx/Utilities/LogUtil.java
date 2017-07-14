@@ -2,10 +2,6 @@ package com.github.irshulx.Utilities;
 
 import android.util.Log;
 
-/**
- * Created by Wang on 2017/7/14.
- */
-
 public class LogUtil {
 
 
