@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimerTask;
 import java.util.UUID;
 
 /**
@@ -75,16 +74,43 @@ public class ImageExtensions {
     public void insertImage(Bitmap image, int index) {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
-        final TextView lblStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
-        lblStatus.setText(editorCore.uploadingHint);
+        final TextView txtStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
+        txtStatus.setText(editorCore.uploadingHint);
         EditText desc = (EditText) childLayout.findViewById(R.id.desc);
         desc.setHint(editorCore.imageDescriptionHint);
         imageView.setImageBitmap(image);
         final String uuid = generateUUID();
-        BindEvents(childLayout);
+        bindEvents(childLayout);
         if (index == -1) {
             index = editorCore.determineIndex(ControlType.img);
         }
+        editorCore.showNextInputHint(index);
+        editorCore.getParentView().addView(childLayout, index);
+
+        if (editorCore.isLastRow(childLayout) && !editorCore.renderFromHtml) {
+            editorCore.getInputExtensions().insertEditText(index + 1, null, null);
+        }
+        EditorControl control = editorCore.createTag(ControlType.img);
+        control.path = uuid; // set the imageId,so we can recognize later after upload
+        childLayout.setTag(control);
+        childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
+        txtStatus.setVisibility(View.VISIBLE);
+        editorCore.onUpload(image, uuid);
+    }
+
+    public void insertImage(String url, String description, int index) {
+        final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
+        ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
+        final TextView txtStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
+        txtStatus.setText(editorCore.uploadingHint);
+        EditText editTextDesc = (EditText) childLayout.findViewById(R.id.desc);
+        editTextDesc.setText(description);
+        editTextDesc.setHint(editorCore.imageDescriptionHint);
+//        imageView.setImageBitmap(image);
+//        final String uuid = generateUUID();
+        bindEvents(childLayout);
+        if (index == -1)
+            index = editorCore.determineIndex(ControlType.img);
         editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(childLayout, index);
 
@@ -93,11 +119,12 @@ public class ImageExtensions {
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
         }
         EditorControl control = editorCore.createTag(ControlType.img);
-        control.path = uuid; // set the imageId,so we can recognize later after upload
+        control.path = url; // set the imageId,so we can recognize later after upload
         childLayout.setTag(control);
-        childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        lblStatus.setVisibility(View.VISIBLE);
-        editorCore.onUpload(image, uuid);
+        childLayout.findViewById(R.id.progress).setVisibility(View.GONE);
+        txtStatus.setVisibility(View.GONE);
+//        editorCore.onUpload(image, uuid);
+        editorCore.onInsertImage(url, index, imageView);
     }
 
 
@@ -162,19 +189,12 @@ public class ImageExtensions {
             EditorControl control = editorCore.createTag(ControlType.img);
             control.path = url;
             view.setTag(control);
-            TimerTask timerTask = new TimerTask() {
+            view.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ((Activity) editorCore.getContext()).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // This code will always run on th UI thread, therefore is safe to modify UI elements.
-                            lblStatus.setVisibility(View.GONE);
-                        }
-                    });
+                    lblStatus.setVisibility(View.GONE);
                 }
-            };
-            new java.util.Timer().schedule(timerTask, 3000);
+            }, 3000);
         }
         view.findViewById(R.id.progress).setVisibility(View.GONE);
     }
@@ -183,10 +203,10 @@ public class ImageExtensions {
       /used to fetch an image from internet and return a Bitmap equivalent
     */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private int InsertIndex;
+        private int insertIndex;
 
         public DownloadImageTask(int index) {
-            this.InsertIndex = index;
+            this.insertIndex = index;
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -203,12 +223,12 @@ public class ImageExtensions {
         }
 
         protected void onPostExecute(Bitmap result) {
-            insertImage(result, this.InsertIndex);
+            insertImage(result, this.insertIndex);
         }
     }
 
 
-    private void BindEvents(final View layout) {
+    private void bindEvents(final View layout) {
         final ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
         final View btn_remove = layout.findViewById(R.id.btn_remove);
 

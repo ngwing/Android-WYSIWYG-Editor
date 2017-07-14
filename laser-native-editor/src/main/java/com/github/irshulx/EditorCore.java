@@ -16,6 +16,7 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -541,7 +542,7 @@ public class EditorCore extends LinearLayout {
                 case map:
                     EditorControl mapTag = (EditorControl) view.getTag();
                     Editable desc = ((CustomEditText) view.findViewById(R.id.desc)).getText();
-                    node.content.add(mapTag.Cords);
+                    node.content.add(mapTag.cords);
                     node.content.add(desc.length() > 0 ? desc.toString() : "");
                     list.add(node);
             }
@@ -683,6 +684,12 @@ public class EditorCore extends LinearLayout {
             return;
         listener.onUpload(image, uuid);
 
+    }
+
+    public void onInsertImage(String url, int index, ImageView imageView) {
+        if (listener == null)
+            return;
+        listener.onInsertImage(url, index, imageView);
     }
 
     public class Utilities {

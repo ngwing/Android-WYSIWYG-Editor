@@ -109,9 +109,12 @@ public class HTMLExtensions {
     }
 
     private void renderImage(Element element) {
-        String src = element.attr("src");
+        String url = element.attr("src");
+        String description = element.attr("alt");
+        String size = element.attr("data-size");
+        url = url + size;
         int index = editorCore.getParentChildCount();
-        editorCore.getImageExtensions().insertImage(null, index);
+        editorCore.getImageExtensions().insertImage(url, description, index);
     }
 
     private void renderList(boolean isOrdered, Element element) {
@@ -240,10 +243,7 @@ public class HTMLExtensions {
     }
 
     public String getContentAsHTML() {
-        StringBuilder htmlBlock = new StringBuilder();
-        String html;
-        EditorContent content = editorCore.getContent();
-        return getContentAsHTML(content);
+        return getContentAsHTML(editorCore.getContent());
     }
 
     public String getContentAsHTML(EditorContent content) {

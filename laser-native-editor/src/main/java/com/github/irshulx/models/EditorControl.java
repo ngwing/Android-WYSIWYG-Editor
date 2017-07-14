@@ -9,6 +9,6 @@ import java.util.List;
 public class EditorControl {
     public ControlType type;
     public String path;
-    public String Cords;
+    public String cords;
     public List<EditorTextStyle> controlStyles;
 }

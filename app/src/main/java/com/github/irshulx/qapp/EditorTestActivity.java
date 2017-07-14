@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -176,6 +177,11 @@ public class EditorTestActivity extends AppCompatActivity {
 
                 editor.onImageUploadComplete("http://img5.duitang.com/uploads/item/201602/19/20160219121711_TKtAv.jpeg[1200,1132]", uuid);
                 // editor.onImageUploadFailed(uuid);
+            }
+
+            @Override
+            public void onInsertImage(String url, int index, ImageView imageView) {
+
             }
         });
         editor.render();  // this method must be called to start the editor

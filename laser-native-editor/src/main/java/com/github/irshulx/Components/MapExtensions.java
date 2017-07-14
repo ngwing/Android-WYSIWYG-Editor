@@ -103,7 +103,7 @@ public class MapExtensions {
             }
         });
         EditorControl control = editorCore.createTag(ControlType.map);
-        control.Cords= cords;
+        control.cords = cords;
         childLayout.setTag(control);
         int Index= editorCore.determineIndex(ControlType.map);
         editorCore.getParentView().addView(childLayout, Index);
