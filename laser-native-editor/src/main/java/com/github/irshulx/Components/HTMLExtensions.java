@@ -29,7 +29,6 @@ public class HTMLExtensions {
 
     public void parseHtml(String htmlString) {
         parseHtmlNode(htmlString);
-        editorCore.getInputExtensions().insertEditText(editorCore.getParentChildCount(), null, null);
     }
 
     private void parseHtmlNode(String htmlString) {
@@ -165,7 +164,7 @@ public class HTMLExtensions {
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" /><br/></div>";
+                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" /></div>";
                 break;
             case map:
                 template = "<div data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";

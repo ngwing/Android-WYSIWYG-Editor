@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.R;
 import com.github.irshulx.Utilities.FontCache;
+import com.github.irshulx.Utilities.LogUtil;
 import com.github.irshulx.models.EditorTextStyle;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.ControlType;
@@ -251,6 +252,7 @@ public class InputExtensions {
 
 
     public TextView insertEditText(int position, String hint, String text) {
+//        LogUtil.traceInvokingMethod();
         String nextHint = isLastText(position) ? null : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
             final CustomEditText view = getNewEditTextInst(nextHint, text);

@@ -90,7 +90,7 @@ public class ImageExtensions {
         editorCore.getParentView().addView(childLayout, index);
 
         //      _Views.add(childLayout);
-        if (editorCore.isLastRow(childLayout)) {
+        if (editorCore.isLastRow(childLayout) && !editorCore.renderFromHtml) {
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
         }
         EditorControl control = editorCore.createTag(ControlType.img);

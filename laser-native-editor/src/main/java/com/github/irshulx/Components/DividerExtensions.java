@@ -52,7 +52,7 @@ public class DividerExtensions {
         }
         editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(view, index);
-        if (editorCore.isLastRow(view) && editorCore.getRenderType() == RenderType.Editor) {
+        if (editorCore.isLastRow(view) && editorCore.getRenderType() == RenderType.Editor && !editorCore.renderFromHtml) {
             //check if ul is active
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
         } else if (editorCore.getRenderType() == RenderType.Editor) {

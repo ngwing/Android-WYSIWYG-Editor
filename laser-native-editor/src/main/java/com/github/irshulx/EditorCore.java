@@ -54,6 +54,8 @@ public class EditorCore extends LinearLayout {
     public String uploadFailHint = null;
     public String firstLineWarningHint = null;
     public int dividerMargin = 0;
+
+    public boolean renderFromHtml = false;
     /*
     * Divider initializors
     */
@@ -347,13 +349,11 @@ public class EditorCore extends LinearLayout {
         if (index == 0)
             return;
         EditorControl contentType = (EditorControl) ((View) view.getParent()).getTag();
-          /*
+        /*
          *
          * If the person was on an active ul|li, move him to the previous node
          *
          */
-
-
         if (contentType != null && (contentType.type == ControlType.OL_LI || contentType.type == ControlType.UL_LI)) {
             listItemExtensions.validateAndRemoveLisNode(view, contentType);
             return;
@@ -421,8 +421,8 @@ public class EditorCore extends LinearLayout {
 //        if (dividerExtensions.deleteHr(Math.max(0, indexOfDeleteItem - 1)))
 //            indexOfDeleteItem -= 1;
 
-//        if (view != this.activeView)
-//            return indexOfDeleteItem;
+        if (view != this.activeView)
+            return indexOfDeleteItem;
 
         for (int i = 0; i < indexOfDeleteItem; i++) {
             if (getControlType(parentView.getChildAt(i)) == ControlType.INPUT) {
@@ -594,9 +594,12 @@ public class EditorCore extends LinearLayout {
         return length - 1 == index;
     }
 
-
     public void renderHtml(String content) {
+        renderFromHtml = true;
         htmlExtensions.parseHtml(content);
+        renderFromHtml = false;
+
+        showNextInputHint(getParentChildCount() - 1);
     }
 
     public void clearAllContents() {
