@@ -366,9 +366,9 @@ public class EditorCore extends LinearLayout {
         /**
          * If its an image or map, do not delete edittext, as there is nothing to focus on after image
          */
-        if (previousType == ControlType.img || previousType == ControlType.map) {
-            return;
-        }
+//        if (previousType == ControlType.img || previousType == ControlType.map) {
+//            return;
+//        }
         /*
          *
          * If the person was on edittext,  had removed the whole text, we need to move into the previous line
