@@ -315,6 +315,13 @@ public class EditorCore extends LinearLayout {
         return controlTag;
     }
 
+    public ControlType getControlType(int index) {
+        View view = parentView.getChildAt(index);
+        if (view == null)
+            return null;
+        return getControlType(view);
+    }
+
     public ControlType getControlType(View view) {
         if (view == null)
             return null;
@@ -322,6 +329,11 @@ public class EditorCore extends LinearLayout {
         if (control == null)
             return null;
         return control.type;
+    }
+
+    public EditorControl getControlTag(int index) {
+        View view = parentView.getChildAt(index);
+        return getControlTag(view);
     }
 
     public EditorControl getControlTag(View view) {
@@ -602,7 +614,51 @@ public class EditorCore extends LinearLayout {
         htmlExtensions.parseHtml(content);
         renderFromHtml = false;
 
-        showNextInputHint(getParentChildCount() - 1);
+        checkLastInputHint();
+        requestLastFocusView();
+    }
+
+    private void checkLastInputHint() {
+        for (int index = getParentChildCount() - 1, prevIndex = index - 1; index >= 0; index--) {
+            prevIndex = index - 1;
+            if (!isInput(prevIndex)) {
+                showNextInputHint(index);
+            }
+        }
+    }
+
+    private void requestLastFocusView() {
+        for (int index = getParentChildCount() - 1, prevIndex = index - 1; index >= 0; index--) {
+            prevIndex = index - 1;
+            if (isInput(index)) {
+                if (!isEmptyText(index) || !isInput(prevIndex)) {
+                    requestFocusView(index);
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean isEmptyText(int index) {
+        View view = parentView.getChildAt(index);
+        if (view == null || !isInput(index))
+            return true;
+        CustomEditText text = (CustomEditText) view;
+        return text.getText().toString().trim().length() == 0;
+    }
+
+    private void requestFocusView(int index) {
+        View view = parentView.getChildAt(index);
+        if (view == null || !isInput(index))
+            return;
+        CustomEditText text = (CustomEditText) view;
+        if (text.requestFocusFromTouch())
+            text.setSelection(text.getText().length());
+        this.activeView = view;
+    }
+
+    private boolean isInput(int index) {
+        return getControlType(index) == ControlType.INPUT;
     }
 
     public void clearAllContents() {
