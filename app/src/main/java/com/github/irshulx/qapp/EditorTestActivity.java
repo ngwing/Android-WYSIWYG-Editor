@@ -174,7 +174,7 @@ public class EditorTestActivity extends AppCompatActivity {
                 scrollView.scrollBy(0, targetHeight);
 
 
-                editor.onImageUploadComplete("http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg", uuid);
+                editor.onImageUploadComplete("http://img5.duitang.com/uploads/item/201602/19/20160219121711_TKtAv.jpeg[1200,1132]", uuid);
                 // editor.onImageUploadFailed(uuid);
             }
         });

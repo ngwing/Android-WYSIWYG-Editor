@@ -73,7 +73,6 @@ public class ImageExtensions {
     }
 
     public void insertImage(Bitmap image, int index) {
-        // Render(getStateFromString());
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView lblStatus = (TextView) childLayout.findViewById(R.id.lblStatus);

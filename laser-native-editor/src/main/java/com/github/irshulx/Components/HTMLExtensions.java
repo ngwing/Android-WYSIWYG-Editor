@@ -5,6 +5,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.github.irshulx.EditorCore;
+import com.github.irshulx.Utilities.ImageUrlWrapper;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.EditorTextStyle;
 import com.github.irshulx.models.ControlType;
@@ -109,8 +110,8 @@ public class HTMLExtensions {
 
     private void renderImage(Element element) {
         String src = element.attr("src");
-        int Index = editorCore.getParentChildCount();
-        editorCore.getImageExtensions().executeDownloadImageTask(src, Index);
+        int index = editorCore.getParentChildCount();
+        editorCore.getImageExtensions().insertImage(null, index);
     }
 
     private void renderList(boolean isOrdered, Element element) {
@@ -164,7 +165,7 @@ public class HTMLExtensions {
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\" /></div>";
+                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
                 break;
             case map:
                 template = "<div data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
@@ -255,7 +256,8 @@ public class HTMLExtensions {
                     htmlBlock.append(html);
                     break;
                 case img:
-                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", item.content.get(0)).replace("{{$desc}}", item.content.get(1)));
+                    ImageUrlWrapper wrapper = ImageUrlWrapper.wrap(item.content.get(0));
+                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", wrapper.getUrl()).replace("{{$desc}}", item.content.get(1)).replace("{{$size}}", wrapper.getSizeString()));
                     break;
                 case hr:
                     htmlBlock.append(getTemplateHtml(item.type));
