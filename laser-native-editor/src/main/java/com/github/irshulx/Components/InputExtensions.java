@@ -252,20 +252,20 @@ public class InputExtensions {
 
 
     public TextView insertEditText(int position, String hint, String text) {
-//        LogUtil.traceInvokingMethod();
         String nextHint = isLastText(position) ? null : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
             final CustomEditText view = getNewEditTextInst(nextHint, text);
             editorCore.getParentView().addView(view, position);
-            editorCore.setActiveView(view);
             final android.os.Handler handler = new android.os.Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setFocus(view);
-                }
-            }, 0);
-            editorCore.setActiveView(view);
+            if (!editorCore.renderFromHtml) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFocus(view);
+                    }
+                });
+                editorCore.setActiveView(view);
+            }
             return view;
         } else {
             final TextView view = getNewTextView(text);
@@ -311,7 +311,7 @@ public class InputExtensions {
         }
         EditorControl editorControl = editorCore.getControlTag(editText);
         if (isEditorTextStyleHeaders(editorTextStyle)) {
-            boolean containsStyle  = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
+            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
             Log.d("containsStyle", "containsStyle : " + containsStyle);
             if (containsStyle) {
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);

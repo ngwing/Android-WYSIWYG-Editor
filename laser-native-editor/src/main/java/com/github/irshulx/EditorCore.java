@@ -628,10 +628,9 @@ public class EditorCore extends LinearLayout {
     }
 
     private void requestLastFocusView() {
-        for (int index = getParentChildCount() - 1, prevIndex = index - 1; index >= 0; index--) {
-            prevIndex = index - 1;
+        for (int index = getParentChildCount() - 1; index >= 0; index--) {
             if (isInput(index)) {
-                if (!isEmptyText(index) || !isInput(prevIndex)) {
+                if (!isEmptyText(index) || !isInput(index - 1)) {
                     requestFocusView(index);
                     return;
                 }
