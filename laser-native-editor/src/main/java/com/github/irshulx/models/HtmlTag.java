@@ -12,5 +12,6 @@ public enum HtmlTag{
     div,
     p,
     b,
-    i
+    i,
+    audio
 }

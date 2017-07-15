@@ -66,6 +66,9 @@ public class HTMLExtensions {
             case img:
                 renderImage(element);
                 break;
+            case audio:
+                renderAudio(element);
+                break;
             case div:
                 html = element.html();
                 parseHtml(html);
@@ -114,6 +117,11 @@ public class HTMLExtensions {
         url = url + size;
         int index = editorCore.getParentChildCount();
         editorCore.getImageExtensions().insertImage(url, description, index);
+    }
+
+    private void renderAudio(Element element) {
+        String url = element.attr("src");
+        editorCore.getAudioExtensions().insertAudio(url);
     }
 
     private void renderList(boolean isOrdered, Element element) {
