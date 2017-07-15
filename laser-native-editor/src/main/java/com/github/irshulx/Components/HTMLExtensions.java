@@ -1,6 +1,5 @@
 package com.github.irshulx.Components;
 
-import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -124,7 +123,7 @@ public class HTMLExtensions {
             TableLayout layout = editorCore.getListItemExtensions().insertList(editorCore.getParentChildCount(), isOrdered, text);
             for (int i = 1; i < element.children().size(); i++) {
                 text = getHtmlSpan(li);
-                editorCore.getListItemExtensions().AddListItem(layout, isOrdered, text);
+                editorCore.getListItemExtensions().addListItem(layout, isOrdered, text);
             }
         }
     }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.irshulx.Components.ImageExtensions;
 import com.github.irshulx.Editor;
@@ -81,6 +82,13 @@ public class PreviewFragment extends Fragment {
             @Override
             public void onInsertImage(String url, int index, ImageView imageView) {
                 glideShow(url, imageView);
+            }
+
+            @Override
+            public View createAudioView(String path) {
+                TextView textView = new TextView(getContext());
+                textView.setText("AudioView path : " + path);
+                return textView;
             }
         });
         editor.renderHtml(html);

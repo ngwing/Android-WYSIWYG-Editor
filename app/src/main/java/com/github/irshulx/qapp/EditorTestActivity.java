@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.irshulx.Editor;
@@ -49,13 +50,10 @@ public class EditorTestActivity extends AppCompatActivity {
         editor = (Editor) findViewById(R.id.editor);
         scrollView = (ScrollView) findViewById(R.id.scroll_view);
         setUpEditor();
-//        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     0);
         }
-//            return;
-//        }
     }
 
     public static int dip2px(Context context, float dpValue) {
@@ -64,7 +62,6 @@ public class EditorTestActivity extends AppCompatActivity {
     }
 
     private void setUpEditor() {
-//        editor.dividerMargin = 100;
         findViewById(R.id.action_h1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +143,12 @@ public class EditorTestActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.action_recorder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.insertAudio();
+            }
+        });
         findViewById(R.id.action_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,6 +200,13 @@ public class EditorTestActivity extends AppCompatActivity {
             @Override
             public void onInsertImage(String url, int index, ImageView imageView) {
 
+            }
+
+            @Override
+            public View createAudioView(String path) {
+                TextView textView = new TextView(getBaseContext());
+                textView.setText("AudioView path : " + path);
+                return textView;
             }
         });
         editor.render();  // this method must be called to start the editor

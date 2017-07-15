@@ -22,6 +22,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.irshulx.Components.AudioExtensions;
 import com.github.irshulx.Components.CustomEditText;
 import com.github.irshulx.Components.DividerExtensions;
 import com.github.irshulx.Components.HTMLExtensions;
@@ -74,6 +75,7 @@ public class EditorCore extends LinearLayout {
     public final int PICK_IMAGE_REQUEST = 1;
     private InputExtensions inputExtensions;
     private ImageExtensions imageExtensions;
+    private AudioExtensions audioExtensions;
     private ListItemExtensions listItemExtensions;
     private DividerExtensions dividerExtensions;
     private HTMLExtensions htmlExtensions;
@@ -94,6 +96,7 @@ public class EditorCore extends LinearLayout {
         gson = new Gson();
         inputExtensions = new InputExtensions(this);
         imageExtensions = new ImageExtensions(this);
+        audioExtensions = new AudioExtensions(this);
         listItemExtensions = new ListItemExtensions(this);
         dividerExtensions = new DividerExtensions(this);
         mapExtensions = new MapExtensions(this);
@@ -190,6 +193,10 @@ public class EditorCore extends LinearLayout {
 
     public ImageExtensions getImageExtensions() {
         return this.imageExtensions;
+    }
+
+    public AudioExtensions getAudioExtensions() {
+        return this.audioExtensions;
     }
 
     public MapExtensions getMapExtensions() {
@@ -590,7 +597,7 @@ public class EditorCore extends LinearLayout {
                         if (i == 0) {
                             layout = listItemExtensions.insertList(content.nodes.indexOf(item), item.type == ControlType.ol, item.content.get(i));
                         } else {
-                            listItemExtensions.AddListItem(layout, item.type == ControlType.ol, item.content.get(i));
+                            listItemExtensions.addListItem(layout, item.type == ControlType.ol, item.content.get(i));
                         }
                     }
                     break;
@@ -745,6 +752,12 @@ public class EditorCore extends LinearLayout {
         if (listener == null)
             return;
         listener.onInsertImage(url, index, imageView);
+    }
+
+    public View createAudioView(String path) {
+        if (listener == null)
+            return null;
+        return listener.createAudioView(path);
     }
 
     public class Utilities {

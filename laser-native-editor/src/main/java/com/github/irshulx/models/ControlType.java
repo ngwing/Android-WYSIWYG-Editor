@@ -9,5 +9,6 @@ public enum ControlType {
     OL_LI,
     img,
     INPUT,
-    map
+    map,
+    audio
 }
