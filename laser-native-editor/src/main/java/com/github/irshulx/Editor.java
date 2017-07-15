@@ -270,8 +270,8 @@ public class Editor extends EditorCore {
         getMapExtensions().loadMapActivity();
     }
 
-    public void insertAudio() {
-        getAudioExtensions().insertAudio("", -1);
+    public void insertAudio(String path) {
+        getAudioExtensions().insertAudio(path);
     }
 
     public void insertMap(String Cords) {

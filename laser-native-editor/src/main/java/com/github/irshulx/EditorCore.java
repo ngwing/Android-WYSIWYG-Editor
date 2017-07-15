@@ -543,6 +543,15 @@ public class EditorCore extends LinearLayout {
                     }
                     //field type, content[]
                     break;
+
+                case audio:
+                    EditorControl audioTag = (EditorControl) view.getTag();
+                    if (!TextUtils.isEmpty(audioTag.path)) {
+                        node.content.add(audioTag.path);
+                        list.add(node);
+                    }
+                    //field type, content[]
+                    break;
                 case hr:
                     list.add(node);
                     break;
@@ -774,5 +783,15 @@ public class EditorCore extends LinearLayout {
         public void toastItOut(String message) {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public View findViewById(String id) {
+        for (int i = 0; i < getParentChildCount(); i++) {
+            View view = getParentView().getChildAt(i);
+            EditorControl control = getControlTag(view);
+            if (!TextUtils.isEmpty(control.path) && control.path.equals(id))
+                return view;
+        }
+        return null;
     }
 }

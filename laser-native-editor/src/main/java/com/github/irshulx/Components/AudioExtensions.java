@@ -39,20 +39,18 @@ public class AudioExtensions {
     }
 
 
-    public void insertAudio(String path, int index) {
+    public void insertAudio(String path) {
         final View childLayout = editorCore.createAudioView(path);
-        final String uuid = generateUUID();
-        if (index == -1)
-            index = editorCore.determineIndex(ControlType.audio);
+        int index = editorCore.determineIndex(ControlType.audio);
 
         editorCore.showNextInputHint(index);
         editorCore.getParentView().addView(childLayout, index);
 
-        if (editorCore.isLastRow(childLayout) && !editorCore.renderFromHtml) {
+        if (editorCore.isLastRow(childLayout) && !editorCore.renderFromHtml)
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
-        }
+
         EditorControl control = editorCore.createTag(ControlType.audio);
-        control.path = uuid; // set the imageId,so we can recognize later after upload
+        control.path = path; // set the imageId,so we can recognize later after upload
         childLayout.setTag(control);
 //        editorCore.onUpload(image, uri, uuid);
     }

@@ -169,6 +169,9 @@ public class HTMLExtensions {
             case img:
                 template = "<div data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
                 break;
+            case audio:
+                template = "<div data-tag=\"audio\"><audio src=\"{{$content}}\"/></div>";
+                break;
             case map:
                 template = "<div data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
                 break;
@@ -257,6 +260,10 @@ public class HTMLExtensions {
                 case img:
                     ImageUrlWrapper wrapper = ImageUrlWrapper.wrap(item.content.get(0));
                     htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", wrapper.getUrl()).replace("{{$desc}}", item.content.get(1)).replace("{{$size}}", wrapper.getSizeString()));
+                    break;
+                case audio:
+                    String path = item.content.get(0);
+                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", path));
                     break;
                 case hr:
                     htmlBlock.append(getTemplateHtml(item.type));

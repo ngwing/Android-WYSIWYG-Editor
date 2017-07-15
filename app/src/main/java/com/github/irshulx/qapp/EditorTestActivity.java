@@ -146,7 +146,7 @@ public class EditorTestActivity extends AppCompatActivity {
         findViewById(R.id.action_recorder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.insertAudio();
+                editor.insertAudio("/sdcard/audio/test_audio_path.aac");
             }
         });
         findViewById(R.id.action_map).setOnClickListener(new View.OnClickListener() {
