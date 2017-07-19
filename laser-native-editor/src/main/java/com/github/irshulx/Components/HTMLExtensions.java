@@ -175,7 +175,7 @@ public class HTMLExtensions {
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div class=\"block\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
+                template = "<div class=\"img\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
                 break;
             case audio:
                 template = "<div class = \"audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
