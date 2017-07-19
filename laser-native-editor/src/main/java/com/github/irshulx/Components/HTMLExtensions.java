@@ -184,10 +184,10 @@ public class HTMLExtensions {
                 template = "<div class=\"block\" data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
                 break;
             case ol:
-                template = "<ol class=\"block\" data-tag=\"ol\">{{$content}}</ol>";
+                template = "<ol data-tag=\"ol\">{{$content}}</ol>";
                 break;
             case ul:
-                template = "<ul class=\"block\" data-tag=\"ul\">{{$content}}</ul>";
+                template = "<ul data-tag=\"ul\">{{$content}}</ul>";
                 break;
             case OL_LI:
             case UL_LI:
