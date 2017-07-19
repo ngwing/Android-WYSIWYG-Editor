@@ -169,7 +169,7 @@ public class HTMLExtensions {
         String template = null;
         switch (child) {
             case INPUT:
-                template = "<{{$tag}} class=\"block\" data-tag=\"input\" {{$style}}>{{$content}}</{{$tag}}>";
+                template = "<{{$tag}} data-tag=\"input\" {{$style}}>{{$content}}</{{$tag}}>";
                 break;
             case hr:
                 template = "<hr data-tag=\"hr\"/>";
