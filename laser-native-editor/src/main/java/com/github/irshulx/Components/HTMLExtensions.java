@@ -169,25 +169,25 @@ public class HTMLExtensions {
         String template = null;
         switch (child) {
             case INPUT:
-                template = "<{{$tag}} data-tag=\"input\" {{$style}}>{{$content}}</{{$tag}}>";
+                template = "<{{$tag}} class=\"block\" data-tag=\"input\" {{$style}}>{{$content}}</{{$tag}}>";
                 break;
             case hr:
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
+                template = "<div class=\"block\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
                 break;
             case audio:
-                template = "<div class = \"audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
+                template = "<div class = \"block,audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
                 break;
             case map:
-                template = "<div data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
+                template = "<div class=\"block\" data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
                 break;
             case ol:
-                template = "<ol data-tag=\"ol\">{{$content}}</ol>";
+                template = "<ol class=\"block\" data-tag=\"ol\">{{$content}}</ol>";
                 break;
             case ul:
-                template = "<ul data-tag=\"ul\">{{$content}}</ul>";
+                template = "<ul class=\"block\" data-tag=\"ul\">{{$content}}</ul>";
                 break;
             case OL_LI:
             case UL_LI:
