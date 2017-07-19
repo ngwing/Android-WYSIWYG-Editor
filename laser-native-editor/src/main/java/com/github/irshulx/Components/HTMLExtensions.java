@@ -178,7 +178,7 @@ public class HTMLExtensions {
                 template = "<div class=\"block\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
                 break;
             case audio:
-                template = "<div class = \"block,audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
+                template = "<div class = \"audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
                 break;
             case map:
                 template = "<div class=\"block\" data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
