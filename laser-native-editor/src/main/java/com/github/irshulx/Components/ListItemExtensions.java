@@ -40,7 +40,11 @@ import com.github.irshulx.EditorCore;
 import com.github.irshulx.R;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.ControlType;
+import com.github.irshulx.models.EditorTextStyle;
+import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
+
+import java.util.List;
 
 import static com.github.irshulx.Components.InputExtensions.CONTENT;
 
@@ -63,11 +67,11 @@ public class ListItemExtensions {
 
     public TableLayout insertList(int Index, boolean isOrdered, String text) {
 
-        TableLayout table = createTable();
-        editorCore.getParentView().addView(table, Index);
-        table.setTag(editorCore.createTag(isOrdered ? ControlType.ol : ControlType.ul));
-        addListItem(table, isOrdered, text);
-        return table;
+        TableLayout tableLayout = createTable();
+        editorCore.getParentView().addView(tableLayout, Index);
+        tableLayout.setTag(editorCore.createTag(isOrdered ? ControlType.ol : ControlType.ul));
+        addListItem(tableLayout, isOrdered, text);
+        return tableLayout;
     }
 
     public TableLayout createTable() {
@@ -78,28 +82,33 @@ public class ListItemExtensions {
     }
 
 
-    public View addListItem(TableLayout layout, boolean isOrdered, String text) {
+    public View addListItem(TableLayout tableLayout, boolean isOrdered, String text) {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.listItemTemplate, null);
-        final CustomEditText editText = (CustomEditText) childLayout.findViewById(R.id.txtText);
-        final TextView _order = (TextView) childLayout.findViewById(R.id.lblOrder);
-        _order.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
+        final CustomEditText editText = (CustomEditText) childLayout.findViewById(R.id.editText);
+        final TextView orderTextView = (TextView) childLayout.findViewById(R.id.labelOrder);
+        orderTextView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
         editText.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.NORMAL));
         if (isOrdered) {
-            int count = layout.getChildCount();
-            _order.setText(String.valueOf(count + 1) + ".");
+            int count = tableLayout.getChildCount();
+            orderTextView.setText(String.valueOf(count + 1) + ".");
         }
         if (editorCore.getRenderType() == RenderType.Editor) {
             editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, editorCore.getInputExtensions().getNormalTextSize());
             editText.setTag(editorCore.createTag(isOrdered ? ControlType.OL_LI : ControlType.UL_LI));
+            orderTextView.setTag(editorCore.createTag(ControlType.list_label));
+            editText.setTag(R.id.outter_tag, tableLayout);
             childLayout.setTag(editorCore.createTag(isOrdered ? ControlType.OL_LI : ControlType.UL_LI));
             editText.setTypeface(editorCore.getInputExtensions().getTypeface(CONTENT, Typeface.NORMAL));
+
+            updateStyle(tableLayout, editText);
+            updateStyle(tableLayout, orderTextView);
+
             editorCore.setActiveView(editText);
             editorCore.getInputExtensions().setText(editText, text);
             editText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     editorCore.setActiveView(v);
-                    //   toggleToolbarProperties(v,null);
                 }
             });
             editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -138,11 +147,11 @@ public class ListItemExtensions {
                         if (s.charAt(s.length() - 1) == '\n') {
                             text = text.replaceAll("<br>", "");
                             TableRow _row = (TableRow) editText.getParent();
-                            TableLayout _table = (TableLayout) _row.getParent();
-                            ControlType type = editorCore.getControlType(_table);
+                            TableLayout tableLayout = (TableLayout) _row.getParent();
+                            ControlType type = editorCore.getControlType(tableLayout);
                             if (s.length() == 0 || s.toString().equals("\n")) {
-                                int index = editorCore.getParentView().indexOfChild(_table);
-                                _table.removeView(_row);
+                                int index = editorCore.getParentView().indexOfChild(tableLayout);
+                                tableLayout.removeView(_row);
                                 editorCore.getInputExtensions().insertEditText(index + 1, "", "");
                             } else {
                                 Spanned __ = Html.fromHtml(text);
@@ -155,9 +164,9 @@ public class ListItemExtensions {
                                 }
 
 
-                                int index = _table.indexOfChild(_row);
+                                int index = tableLayout.indexOfChild(_row);
                                 //  insertEditText(index + 1, "");
-                                addListItem(_table, type == ControlType.ol, "");
+                                addListItem(tableLayout, type == ControlType.ol, "");
                             }
 
                         }
@@ -176,7 +185,7 @@ public class ListItemExtensions {
                 }
             }, 0);
         } else {
-            final TextView textView = (TextView) childLayout.findViewById(R.id.lblText);
+            final TextView textView = (TextView) childLayout.findViewById(R.id.labelText);
             textView.setTypeface(editorCore.getInputExtensions().getTypeface(CONTENT, Typeface.NORMAL));
 
             /*
@@ -189,58 +198,90 @@ public class ListItemExtensions {
             textView.setVisibility(View.VISIBLE);
             editText.setVisibility(View.GONE);
         }
-        layout.addView(childLayout);
+        tableLayout.addView(childLayout);
         return childLayout;
     }
 
-    public void convertListToNormalText(TableLayout _table, int startIndex) {
-        int tableChildCount = _table.getChildCount();
+    public void convertListToNormalText(TableLayout tableLayout, int startIndex) {
+        int tableChildCount = tableLayout.getChildCount();
         for (int i = startIndex; i < tableChildCount; i++) {
-            View _childRow = _table.getChildAt(i);
-            _table.removeView(_childRow);
-            String text = getTextFromListItem(_childRow);
-            int Index = editorCore.getParentView().indexOfChild(_table);
+            View childRow = tableLayout.getChildAt(i);
+            tableLayout.removeView(childRow);
+            String text = getTextFromListItem(childRow);
+            int Index = editorCore.getParentView().indexOfChild(tableLayout);
             editorCore.getInputExtensions().insertEditText(Index + 1, "", text);
             i -= 1;
             tableChildCount -= 1;
         }
         //if item is the last in the table, remove the table from parent
 
-        if (_table.getChildCount() == 0) {
-            editorCore.getParentView().removeView(_table);
+        if (tableLayout.getChildCount() == 0) {
+            editorCore.getParentView().removeView(tableLayout);
         }
     }
 
-    public void convertListToOrdered(TableLayout _table) {
-        EditorControl type = editorCore.createTag(ControlType.ol);
-        _table.setTag(type);
-        for (int i = 0; i < _table.getChildCount(); i++) {
-            View _childRow = _table.getChildAt(i);
-            CustomEditText editText = (CustomEditText) _childRow.findViewById(R.id.txtText);
+    public void convertListToOrdered(TableLayout tableLayout) {
+        EditorControl editorControl = editorCore.createTag(ControlType.ol);
+        tableLayout.setTag(editorControl);
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            View childRow = tableLayout.getChildAt(i);
+            CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
             editText.setTag(editorCore.createTag(ControlType.OL_LI));
-            _childRow.setTag(editorCore.createTag(ControlType.OL_LI));
-            TextView _bullet = (TextView) _childRow.findViewById(R.id.lblOrder);
-            _bullet.setText(String.valueOf(i + 1) + ".");
+            childRow.setTag(editorCore.createTag(ControlType.OL_LI));
+            TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
+            bullet.setText(String.valueOf(i + 1) + ".");
         }
     }
 
+    public void updateListStyle(TextView textView, EditorTextStyle style) {
+        if (textView == null)
+            return;
+        TableLayout tableLayout = (TableLayout) textView.getTag(R.id.outter_tag);
+        updateListStyle(tableLayout, style);
+    }
 
-    public void convertListToUnordered(TableLayout _table) {
+
+    public void updateListStyle(TableLayout tableLayout, EditorTextStyle style) {
+        EditorControl control = editorCore.getControlTag(tableLayout);
+        Op op = Op.Insert;
+        boolean containsStyle = editorCore.containsStyle(control.controlStyles, style);
+        if (containsStyle)
+            op = Op.Delete;
+        editorCore.updateTagStyle(control, style, op);
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            View childRow = tableLayout.getChildAt(i);
+            CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
+            TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
+            editorCore.getInputExtensions().updateTextStyle(style, editText, false);
+            editorCore.getInputExtensions().updateTextStyle(style, bullet, false);
+        }
+    }
+
+    private void updateStyle(TableLayout tableLayout, TextView textView) {
+        EditorControl control = editorCore.getControlTag(tableLayout);
+        List<EditorTextStyle> controlStyles = control.controlStyles;
+        if (controlStyles == null || controlStyles.isEmpty())
+            return;
+        EditorTextStyle style = controlStyles.get(controlStyles.size() - 1);
+        editorCore.getInputExtensions().updateTextStyle(style, textView, false);
+    }
+
+    public void convertListToUnordered(TableLayout tableLayout) {
         EditorControl type = editorCore.createTag(ControlType.ul);
-        _table.setTag(type);
-        for (int i = 0; i < _table.getChildCount(); i++) {
-            View _childRow = _table.getChildAt(i);
-            CustomEditText _EditText = (CustomEditText) _childRow.findViewById(R.id.txtText);
+        tableLayout.setTag(type);
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            View childRow = tableLayout.getChildAt(i);
+            CustomEditText _EditText = (CustomEditText) childRow.findViewById(R.id.editText);
             _EditText.setTag(editorCore.createTag(ControlType.UL_LI));
-            _childRow.setTag(editorCore.createTag(ControlType.UL_LI));
-            TextView _bullet = (TextView) _childRow.findViewById(R.id.lblOrder);
-            _bullet.setText("•");
+            childRow.setTag(editorCore.createTag(ControlType.UL_LI));
+            TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
+            bullet.setText("•");
         }
     }
 
 
     public String getTextFromListItem(View row) {
-        CustomEditText _text = (CustomEditText) row.findViewById(R.id.txtText);
+        CustomEditText _text = (CustomEditText) row.findViewById(R.id.editText);
         return _text.getText().toString();
     }
 
@@ -253,8 +294,8 @@ public class ListItemExtensions {
                  *
                  */
             TableRow _row = (TableRow) activeView.getParent();
-            TableLayout _table = (TableLayout) _row.getParent();
-            convertListToNormalText(_table, _table.indexOfChild(_row));
+            TableLayout tableLayout = (TableLayout) _row.getParent();
+            convertListToNormalText(tableLayout, tableLayout.indexOfChild(_row));
                     /* this means, current focus is on n unordered list item, since user clicked
                  on unordered list icon, loop through the parents childs and convert each list item into normal edittext
                  *
@@ -267,8 +308,8 @@ public class ListItemExtensions {
                     * item into an ordered list.
                     * */
             TableRow _row = (TableRow) activeView.getParent();
-            TableLayout _table = (TableLayout) _row.getParent();
-            convertListToOrdered(_table);
+            TableLayout tableLayout = (TableLayout) _row.getParent();
+            convertListToOrdered(tableLayout);
                                  /*
                     * user clicked on ordered list item. since it's an unordered list, you need to loop through each and convert each
                     * item into an ordered list.
@@ -280,8 +321,8 @@ public class ListItemExtensions {
                 *
                 * */
             TableRow _row = (TableRow) activeView.getParent();
-            TableLayout _table = (TableLayout) _row.getParent();
-            convertListToNormalText(_table, _table.indexOfChild(_row));
+            TableLayout tableLayout = (TableLayout) _row.getParent();
+            convertListToNormalText(tableLayout, tableLayout.indexOfChild(_row));
                 /*
                 *
                 * this means the item was an ordered list, you need to convert the item into a normal EditText
@@ -295,8 +336,8 @@ public class ListItemExtensions {
                 * */
 
             TableRow _row = (TableRow) activeView.getParent();
-            TableLayout _table = (TableLayout) _row.getParent();
-            convertListToUnordered(_table);
+            TableLayout tableLayout = (TableLayout) _row.getParent();
+            convertListToUnordered(tableLayout);
                   /*
                 *
                 * this means the item was an ordered list, you need to convert the item into an unordered list
@@ -309,10 +350,10 @@ public class ListItemExtensions {
                 * if it's unordered, convert all of em to ordered.
                 *
                 * */
-            int index_of_activeView = editorCore.getParentView().indexOfChild(editorCore.getActiveView());
-            int Index = editorCore.determineIndex(ControlType.OL_LI);
+            int indexOfActiveView = editorCore.getParentView().indexOfChild(editorCore.getActiveView());
+            int index = editorCore.determineIndex(ControlType.OL_LI);
             //check if the active view has content
-            View view = editorCore.getParentView().getChildAt(Index);
+            View view = editorCore.getParentView().getChildAt(index);
             if (view != null) {
                 ControlType type = editorCore.getControlType(view); //if then, get the type of that view, this behaviour is so, if that line has text,
                 // it needs to be converted to list item
@@ -320,19 +361,19 @@ public class ListItemExtensions {
                     String text = ((CustomEditText) view).getText().toString();  //get the text, if not null, replace it with list item
                     editorCore.getParentView().removeView(view);
 
-                    if (Index == 0) {
-                        insertList(Index, isOrdered, text);
-                    } else if (editorCore.getControlType(editorCore.getParentView().getChildAt(index_of_activeView - 1)) == ControlType.ol) {
-                        TableLayout _table = (TableLayout) editorCore.getParentView().getChildAt(index_of_activeView - 1);
-                        addListItem(_table, isOrdered, text);
+                    if (index == 0) {
+                        insertList(index, isOrdered, text);
+                    } else if (editorCore.getControlType(editorCore.getParentView().getChildAt(indexOfActiveView - 1)) == ControlType.ol) {
+                        TableLayout tableLayout = (TableLayout) editorCore.getParentView().getChildAt(indexOfActiveView - 1);
+                        addListItem(tableLayout, isOrdered, text);
                     } else {
-                        insertList(Index, isOrdered, text);
+                        insertList(index, isOrdered, text);
                     }
                 } else {
-                    insertList(Index, isOrdered, "");    //otherwise
+                    insertList(index, isOrdered, "");    //otherwise
                 }
             } else {
-                insertList(Index, isOrdered, "");
+                insertList(index, isOrdered, "");
             }
 
 
@@ -343,33 +384,33 @@ public class ListItemExtensions {
                 *
                 * */
 
-            int Index = editorCore.determineIndex(ControlType.UL_LI);
+            int index = editorCore.determineIndex(ControlType.UL_LI);
             //check if the active view has content
-            View view = editorCore.getParentView().getChildAt(Index);
+            View view = editorCore.getParentView().getChildAt(index);
             if (view != null) {
                 ControlType type = editorCore.getControlType(view); //if then, get the type of that view, this behaviour is so, if that line has text,
                 // it needs to be converted to list item
                 if (type == ControlType.INPUT) {
                     String text = ((EditText) view).getText().toString();  //get the text, if not null, replace it with list item
                     editorCore.getParentView().removeView(view);
-                    insertList(Index, false, text);
+                    insertList(index, false, text);
                 } else {
-                    insertList(Index, false, "");    //otherwise
+                    insertList(index, false, "");    //otherwise
                 }
             } else {
-                insertList(Index, false, "");
+                insertList(index, false, "");
             }
         }
 
     }
 
 
-    private void rearrangeColumns(TableLayout _table) {
+    private void rearrangeColumns(TableLayout tableLayout) {
         //TODO, make sure that if OL, all the items are ordered numerically
-        for (int i = 0; i < _table.getChildCount(); i++) {
-            TableRow tableRow = (TableRow) _table.getChildAt(i);
-            TextView _bullet = (TextView) tableRow.findViewById(R.id.lblOrder);
-            _bullet.setText(String.valueOf(i + 1) + ".");
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            TableRow tableRow = (TableRow) tableLayout.getChildAt(i);
+            TextView bullet = (TextView) tableRow.findViewById(R.id.labelOrder);
+            bullet.setText(String.valueOf(i + 1) + ".");
         }
     }
 
@@ -381,20 +422,20 @@ public class ListItemExtensions {
          *
          */
         TableRow _row = (TableRow) view.getParent();
-        TableLayout _table = (TableLayout) _row.getParent();
-        int indexOnList = _table.indexOfChild(_row);
-        _table.removeView(_row);
+        TableLayout tableLayout = (TableLayout) _row.getParent();
+        int indexOnList = tableLayout.indexOfChild(_row);
+        tableLayout.removeView(_row);
         if (indexOnList > 0) {
             /**
              * check if the index of the deleted row is <0, if so, move the focus to the previous li
              */
-            TableRow focusrow = (TableRow) _table.getChildAt(indexOnList - 1);
-            EditText text = (EditText) focusrow.findViewById(R.id.txtText);
+            TableRow focusrow = (TableRow) tableLayout.getChildAt(indexOnList - 1);
+            EditText text = (EditText) focusrow.findViewById(R.id.editText);
             /**
              * Rearrange the nodes
              */
             if (contentType.type == ControlType.OL_LI) {
-                rearrangeColumns(_table);
+                rearrangeColumns(tableLayout);
             }
             if (text.requestFocus()) {
                 text.setSelection(text.getText().length());
@@ -403,7 +444,7 @@ public class ListItemExtensions {
             /**
              * The removed row was first on the list. delete the list, and set the focus to previous element on the editor
              */
-            editorCore.removeParent(_table);
+            editorCore.removeParent(tableLayout);
         }
     }
 
@@ -413,7 +454,7 @@ public class ListItemExtensions {
         if (tableLayout.getChildCount() > 0) {
             TableRow tableRow = (TableRow) tableLayout.getChildAt(position == POSITION_START ? 0 : count - 1);
             if (tableRow != null) {
-                EditText editText = (EditText) tableRow.findViewById(R.id.txtText);
+                EditText editText = (EditText) tableRow.findViewById(R.id.editText);
                 if (editText.requestFocus()) {
                     editText.setSelection(editText.getText().length());
                 }
@@ -438,7 +479,7 @@ public class ListItemExtensions {
         }
         TableRow prevRow = (TableRow) tableLayout.getChildAt(indexOnTable - 1);
         if (prevRow != null) {
-            CustomEditText editText = (CustomEditText) tableRow.findViewById(R.id.txtText);
+            CustomEditText editText = (CustomEditText) tableRow.findViewById(R.id.editText);
             if (editText.requestFocus()) {
                 editText.setSelection(editText.getText().length());
             }

@@ -10,5 +10,6 @@ public enum ControlType {
     img,
     INPUT,
     map,
+    list_label,
     audio
 }

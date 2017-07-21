@@ -36,15 +36,15 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.R;
 import com.github.irshulx.Utilities.FontCache;
-import com.github.irshulx.Utilities.LogUtil;
-import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.ControlType;
+import com.github.irshulx.models.EditorControl;
+import com.github.irshulx.models.EditorTextStyle;
 import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
 
@@ -63,7 +63,7 @@ public class InputExtensions {
     private int H1TEXTSIZE = 23;
     private int H2TEXTSIZE = 20;
     private int H3TEXTSIZE = 18;
-    private int NORMALTEXTSIZE = 16;
+    private int NORMAL_TEXT_SIZE = 16;
     private int fontFace = R.string.fontFamily__serif;
     EditorCore editorCore;
     private Map<Integer, String> contentTypeface;
@@ -94,7 +94,7 @@ public class InputExtensions {
     }
 
     public int getNormalTextSize() {
-        return this.NORMALTEXTSIZE;
+        return this.NORMAL_TEXT_SIZE;
     }
 
     public String getFontFace() {
@@ -246,7 +246,7 @@ public class InputExtensions {
     private void addEditableStyling(TextView editText) {
         editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
         editText.setFocusableInTouchMode(true);
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
 
     }
 
@@ -301,28 +301,34 @@ public class InputExtensions {
             return H2TEXTSIZE;
         if (editorTextStyle == EditorTextStyle.H3)
             return H3TEXTSIZE;
-        return NORMALTEXTSIZE;
+        return NORMAL_TEXT_SIZE;
     }
 
-    private void updateTextStyle(TextView editText, EditorTextStyle editorTextStyle) {
+    private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle) {
         EditorControl tag;
-        if (editText == null) {
-            editText = (EditText) editorCore.getActiveView();
-        }
-        EditorControl editorControl = editorCore.getControlTag(editText);
+        if (textView == null)
+            textView = (TextView) editorCore.getActiveView();
+
+        EditorControl editorControl = editorCore.getControlTag(textView);
+
+        boolean isListLabel = textView.getId() == R.id.labelOrder;
+
         if (isEditorTextStyleHeaders(editorTextStyle)) {
             boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
-            Log.d("containsStyle", "containsStyle : " + containsStyle);
+            int typeface = Typeface.NORMAL;
             if (containsStyle) {
-                editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
-                editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
+                if (isListLabel)
+                    typeface = Typeface.BOLD;
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
+                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
                 tag = rewriteTags(editorControl, EditorTextStyle.NORMAL);
             } else {
-                editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getTextStyleFromStyle(editorTextStyle));
-                editText.setTypeface(getTypeface(HEADING, Typeface.BOLD));
+                int textSize = getTextStyleFromStyle(editorTextStyle);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
                 tag = rewriteTags(editorControl, editorTextStyle);
             }
-            editText.setTag(tag);
+            textView.setTag(tag);
         }
     }
 
@@ -376,48 +382,58 @@ public class InputExtensions {
         editText.setTag(tag);
     }
 
-    public void updateTextStyle(EditorTextStyle style, TextView editText) {
-        /// String type = getControlType(getActiveView());
+
+    public void updateTextStyle(EditorTextStyle style, TextView textView) {
+        updateTextStyle(style, textView, true);
+    }
+
+    public void updateTextStyle(EditorTextStyle style, TextView textView, boolean checkTable) {
         try {
-            if (editText == null) {
-                editText = (EditText) editorCore.getActiveView();
+            if (textView == null)
+                textView = (TextView) editorCore.getActiveView();
+
+            Object outterTag = textView.getTag(R.id.outter_tag);
+            if (checkTable && outterTag != null && outterTag instanceof TableLayout) {
+                editorCore.getListItemExtensions().updateListStyle((TableLayout) outterTag, style);
+                return;
             }
-            EditorControl tag = editorCore.getControlTag(editText);
+
+            EditorControl tag = editorCore.getControlTag(textView);
 
             if (isEditorTextStyleHeaders(style)) {
-                updateTextStyle(editText, style);
+                updateHeaderTextStyle(textView, style);
                 return;
             }
             if (isEditorTextStyleContentStyles(style)) {
                 boolean containsHeadertextStyle = containsHeaderTextStyle(tag);
                 if (style == EditorTextStyle.BOLD) {
-                    boldifyText(tag, editText, containsHeadertextStyle ? HEADING : CONTENT);
+                    boldifyText(tag, textView, containsHeadertextStyle ? HEADING : CONTENT);
                 } else if (style == EditorTextStyle.ITALIC) {
-                    italicizeText(tag, editText, containsHeadertextStyle ? HEADING : CONTENT);
+                    italicizeText(tag, textView, containsHeadertextStyle ? HEADING : CONTENT);
                 }
                 return;
             }
             if (style == EditorTextStyle.INDENT) {
-                int pBottom = editText.getPaddingBottom();
-                int pRight = editText.getPaddingRight();
-                int pTop = editText.getPaddingTop();
+                int pBottom = textView.getPaddingBottom();
+                int pRight = textView.getPaddingRight();
+                int pTop = textView.getPaddingTop();
                 if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.INDENT)) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
-                    editText.setPadding(0, pTop, pRight, pBottom);
-                    editText.setTag(tag);
+                    textView.setPadding(0, pTop, pRight, pBottom);
+                    textView.setTag(tag);
                 } else {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Insert);
-                    editText.setPadding(30, pTop, pRight, pBottom);
-                    editText.setTag(tag);
+                    textView.setPadding(30, pTop, pRight, pBottom);
+                    textView.setTag(tag);
                 }
             } else if (style == EditorTextStyle.OUTDENT) {
-                int pBottom = editText.getPaddingBottom();
-                int pRight = editText.getPaddingRight();
-                int pTop = editText.getPaddingTop();
+                int pBottom = textView.getPaddingBottom();
+                int pRight = textView.getPaddingRight();
+                int pTop = textView.getPaddingTop();
                 if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.INDENT)) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
-                    editText.setPadding(0, pTop, pRight, pBottom);
-                    editText.setTag(tag);
+                    textView.setPadding(0, pTop, pRight, pBottom);
+                    textView.setTag(tag);
                 }
             }
         } catch (Exception e) {

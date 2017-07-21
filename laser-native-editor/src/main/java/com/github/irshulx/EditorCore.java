@@ -285,7 +285,7 @@ public class EditorCore extends LinearLayout {
                 return currentIndex;
             }
         } else if (activeType == ControlType.UL_LI || activeType == ControlType.OL_LI) {
-            EditText edittext = (EditText) view.findViewById(R.id.txtText);
+            EditText edittext = (EditText) view.findViewById(R.id.editText);
             if (edittext.getText().length() > 0) {
 
             }
@@ -561,9 +561,11 @@ public class EditorCore extends LinearLayout {
                     int rowCount = table.getChildCount();
                     for (int j = 0; j < rowCount; j++) {
                         View row = table.getChildAt(j);
-                        EditText li = (EditText) row.findViewById(R.id.txtText);
+                        EditText li = (EditText) row.findViewById(R.id.editText);
                         node.content.add(Html.toHtml(li.getText()));
                     }
+                    tag = (EditorControl) view.getTag();
+                    node.contentStyles = tag.controlStyles;
                     list.add(node);
                     break;
                 case map:

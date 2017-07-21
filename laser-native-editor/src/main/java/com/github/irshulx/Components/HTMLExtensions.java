@@ -17,6 +17,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Created by mkallingal on 5/25/2016.
  */
@@ -184,10 +187,10 @@ public class HTMLExtensions {
                 template = "<div class=\"block\" data-tag=\"map\"><img src=\"{{$content}}\" /><span text-align:'center'>{{$desc}}</span></div>";
                 break;
             case ol:
-                template = "<ol data-tag=\"ol\">{{$content}}</ol>";
+                template = "<ol class = \"{{$class}}\" data-tag=\"ol\">{{$content}}</ol>";
                 break;
             case ul:
-                template = "<ul data-tag=\"ul\">{{$content}}</ul>";
+                template = "<ul class = \"{{$class}}\" data-tag=\"ul\">{{$content}}</ul>";
                 break;
             case OL_LI:
             case UL_LI:
@@ -293,18 +296,36 @@ public class HTMLExtensions {
         return getContentAsHTML(content);
     }
 
-
     private String getListAsHtml(Node item) {
         int count = item.content.size();
-        String tmpl_parent = getTemplateHtml(item.type);
+        String templateParent = getTemplateHtml(item.type);
         StringBuilder childBlock = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            String tmpl_li = getTemplateHtml(item.type == ControlType.ul ? ControlType.UL_LI : ControlType.OL_LI);
+            String templateLi = getTemplateHtml(item.type == ControlType.ul ? ControlType.UL_LI : ControlType.OL_LI);
             String trimmed = Jsoup.parse(item.content.get(i)).body().select("p").html();
-            tmpl_li = tmpl_li.replace("{{$content}}", trimmed);
-            childBlock.append(tmpl_li);
+            templateLi = templateLi.replace("{{$content}}", trimmed);
+            childBlock.append(templateLi);
         }
-        tmpl_parent = tmpl_parent.replace("{{$content}}", childBlock.toString());
-        return tmpl_parent;
+        templateParent = templateParent.replace("{{$content}}", childBlock.toString());
+        String cssClass = getCSSClass(item);
+        templateParent = templateParent.replace("{{$class}}", cssClass);
+        return templateParent;
+    }
+
+    private String getCSSClass(Node item) {
+        StringBuilder sb = new StringBuilder();
+        List<EditorTextStyle> contentStyles = item.contentStyles;
+        if (contentStyles == null || contentStyles.isEmpty())
+            return "";
+        Iterator<EditorTextStyle> iter = contentStyles.iterator();
+        EditorTextStyle style = null;
+        while (iter.hasNext()) {
+            style = iter.next();
+            sb.append(".");
+            sb.append(style.name().toLowerCase());
+            if (iter.hasNext())
+                sb.append(",");
+        }
+        return sb.toString();
     }
 }
