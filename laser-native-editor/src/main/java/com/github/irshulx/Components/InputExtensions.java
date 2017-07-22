@@ -329,6 +329,11 @@ public class InputExtensions {
             }
             textView.setTag(tag);
         }
+
+        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC)
+                || editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.BOLDITALIC);
+        if (containsItalic)
+            updateTextViewStyle(EditorTextStyle.ITALIC, textView);
     }
 
     private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle, Op op) {
