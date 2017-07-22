@@ -51,6 +51,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -412,13 +413,25 @@ public class InputExtensions {
     }
 
     public void italicizeText(EditorControl tag, TextView editText, boolean isHeader) {
+        int typeface = isHeader || isBold(tag) ? Typeface.BOLD : Typeface.NORMAL;
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
             tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
-            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
+            editText.setTypeface(getTypeface(CONTENT, typeface));
         } else {
+            editText.setTypeface(getTypeface(CONTENT, typeface + Typeface.ITALIC));
             tag = addTagStyle(tag, EditorTextStyle.ITALIC);
         }
         editText.setTag(tag);
+    }
+
+    private boolean isBold(EditorControl tag) {
+        for (EditorTextStyle item : tag.controlStyles) {
+            if (isBold(item)) {
+                return true;
+            }
+            continue;
+        }
+        return false;
     }
 
 
