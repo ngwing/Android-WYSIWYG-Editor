@@ -305,12 +305,18 @@ public class InputExtensions {
                 tag = deleteTagStyle(tag, EditorTextStyle.H3);
             }
         }
+        if (isHeader(style))
+            deleteTagStyle(tag, EditorTextStyle.BOLD);
         tag = editorCore.updateTagStyle(tag, style, Op.Insert);
         return tag;
     }
 
     public boolean isHeader(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.H1 || editorTextStyle == EditorTextStyle.H2 || editorTextStyle == EditorTextStyle.H3;
+    }
+
+    public boolean isBold(EditorTextStyle style) {
+        return style == EditorTextStyle.BOLD;
     }
 
     public boolean isText(EditorTextStyle editorTextStyle) {
