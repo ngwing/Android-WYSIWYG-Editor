@@ -51,7 +51,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -320,6 +319,10 @@ public class InputExtensions {
         return style == EditorTextStyle.BOLD;
     }
 
+    public boolean isItalic(EditorTextStyle style) {
+        return style == EditorTextStyle.ITALIC;
+    }
+
     public boolean isText(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.BOLDITALIC || editorTextStyle == EditorTextStyle.ITALIC;
     }
@@ -378,41 +381,24 @@ public class InputExtensions {
     }
 
 
-    public void boldifyText(EditorControl tag, TextView editText, boolean isHeader) {
+    public void bold(EditorControl tag, TextView editText, boolean isHeader) {
+        if (isHeader(tag))
+            return;
+
+        int typeface = isItalic(tag) ? Typeface.ITALIC : Typeface.NORMAL;
+
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
             tag = deleteTagStyle(tag, EditorTextStyle.BOLD);
-            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL + typeface));
         } else {
             tag = addTagStyle(tag, EditorTextStyle.BOLD);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD + typeface));
         }
         editText.setTag(tag);
     }
 
-    private int getTypefaceStyle(EditorTextStyle style) {
-        switch (style) {
-            case BOLD:
-                return Typeface.BOLD;
-            case ITALIC:
-                return Typeface.BOLD;
-            case BOLDITALIC:
-                return Typeface.BOLD_ITALIC;
-        }
-        return -1;
-    }
 
-    public void boldifyText(EditorControl tag, TextView editText, int textMode, EditorTextStyle style, Op op) {
-        if (op == Op.Delete) {
-            tag.controlStyles.clear();
-            editText.setTypeface(getTypeface(textMode, Typeface.NORMAL));
-        } else {
-            int typefaceInt = getTypefaceStyle(style);
-            editorCore.updateTagStyle(tag, style, Op.Insert);
-            editText.setTypeface(getTypeface(textMode, typefaceInt));
-        }
-    }
-
-    public void italicizeText(EditorControl tag, TextView editText, boolean isHeader) {
+    public void italic(EditorControl tag, TextView editText, boolean isHeader) {
         int typeface = isHeader || isBold(tag) ? Typeface.BOLD : Typeface.NORMAL;
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
             tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
@@ -427,6 +413,16 @@ public class InputExtensions {
     private boolean isBold(EditorControl tag) {
         for (EditorTextStyle item : tag.controlStyles) {
             if (isBold(item)) {
+                return true;
+            }
+            continue;
+        }
+        return false;
+    }
+
+    private boolean isItalic(EditorControl tag) {
+        for (EditorTextStyle item : tag.controlStyles) {
+            if (isItalic(item)) {
                 return true;
             }
             continue;
@@ -479,9 +475,9 @@ public class InputExtensions {
                 if (style == EditorTextStyle.BOLD) {
                     if (isHeader)
                         return;
-                    boldifyText(tag, textView, isHeader);
+                    bold(tag, textView, isHeader);
                 } else if (style == EditorTextStyle.ITALIC) {
-                    italicizeText(tag, textView, isHeader);
+                    italic(tag, textView, isHeader);
                 }
                 return;
             }
