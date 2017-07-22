@@ -284,6 +284,16 @@ public class InputExtensions {
         return tag;
     }
 
+    private EditorControl deleteTag(EditorControl tag, EditorTextStyle styleToAdd) {
+        tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Delete);
+        return tag;
+    }
+
+    private EditorControl addTag(EditorControl tag, EditorTextStyle styleToAdd) {
+        tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Insert);
+        return tag;
+    }
+
     public boolean isHeader(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.H1 || editorTextStyle == EditorTextStyle.H2 || editorTextStyle == EditorTextStyle.H3;
     }
@@ -303,7 +313,7 @@ public class InputExtensions {
         return NORMAL_TEXT_SIZE;
     }
 
-    private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle) {
+    private void updateHeaderTextStyle(TextView textView, EditorTextStyle style) {
         EditorControl tag;
         if (textView == null)
             textView = (TextView) editorCore.getActiveView();
@@ -312,28 +322,31 @@ public class InputExtensions {
 
         boolean isListLabel = textView.getId() == R.id.labelOrder;
 
-        if (isHeader(editorTextStyle)) {
-            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
+        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC)
+                || editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.BOLDITALIC);
+
+        if (isHeader(style)) {
+            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, style);
             int typeface = Typeface.NORMAL;
             if (containsStyle) {
                 if (isListLabel)
                     typeface = Typeface.BOLD;
+                if (containsItalic)
+                    typeface += Typeface.ITALIC;
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
                 textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
-                tag = rewriteTags(editorControl, EditorTextStyle.NORMAL);
+                tag = deleteTag(editorControl, style);
             } else {
-                int textSize = getTextStyleFromStyle(editorTextStyle);
+                typeface = Typeface.BOLD;
+                if (containsItalic)
+                    typeface += Typeface.ITALIC;
+                int textSize = getTextStyleFromStyle(style);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
-                tag = rewriteTags(editorControl, editorTextStyle);
+                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
+                tag = addTag(editorControl, style);
             }
             textView.setTag(tag);
         }
-
-        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC)
-                || editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.BOLDITALIC);
-        if (containsItalic)
-            updateTextViewStyle(EditorTextStyle.ITALIC, textView);
     }
 
     private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle, Op op) {
