@@ -28,6 +28,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -285,7 +286,7 @@ public class InputExtensions {
     }
 
     public EditorControl updateTagStyle(EditorControl tag, EditorTextStyle style) {
-        if (tag.controlStyles != null && tag.controlStyles.contains(style))
+        if (tag.styles != null && tag.styles.contains(style))
             return deleteTagStyle(tag, style);
         return addTagStyle(tag, style);
     }
@@ -311,8 +312,8 @@ public class InputExtensions {
         return tag;
     }
 
-    public boolean isHeader(EditorTextStyle editorTextStyle) {
-        return editorTextStyle == EditorTextStyle.H1 || editorTextStyle == EditorTextStyle.H2 || editorTextStyle == EditorTextStyle.H3;
+    public boolean isHeader(EditorTextStyle style) {
+        return style == EditorTextStyle.H1 || style == EditorTextStyle.H2 || style == EditorTextStyle.H3;
     }
 
     public boolean isBold(EditorTextStyle style) {
@@ -323,8 +324,8 @@ public class InputExtensions {
         return style == EditorTextStyle.ITALIC;
     }
 
-    public boolean isText(EditorTextStyle editorTextStyle) {
-        return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.ITALIC;
+    public boolean isText(EditorTextStyle style) {
+        return style == EditorTextStyle.BOLD || style == EditorTextStyle.ITALIC;
     }
 
 
@@ -345,10 +346,10 @@ public class InputExtensions {
 
         EditorControl editorControl = editorCore.getControlTag(textView);
 
-        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC);
+        boolean containsItalic = editorCore.containsStyle(editorControl.styles, EditorTextStyle.ITALIC);
 
         if (isHeader(style)) {
-            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, style);
+            boolean containsStyle = editorCore.containsStyle(editorControl.styles, style);
             int typeface = Typeface.NORMAL;
             if (containsStyle) {
                 if (containsItalic)
@@ -370,36 +371,36 @@ public class InputExtensions {
     }
 
     public boolean isHeader(EditorControl tag) {
-        for (EditorTextStyle item : tag.controlStyles) {
-            if (isHeader(item)) {
+        if (tag == null || tag.styles == null)
+            return false;
+        for (EditorTextStyle style : tag.styles) {
+            if (isHeader(style))
                 return true;
-            }
             continue;
         }
         return false;
     }
 
 
-    public void bold(EditorControl tag, TextView editText, boolean isHeader) {
+    public void bold(EditorControl tag, TextView textView) {
         if (isHeader(tag))
             return;
-
         int typeface = isItalic(tag) ? Typeface.ITALIC : Typeface.NORMAL;
 
-        if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
+        if (editorCore.containsStyle(tag.styles, EditorTextStyle.BOLD)) {
             tag = deleteTagStyle(tag, EditorTextStyle.BOLD);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL + typeface));
+            textView.setTypeface(getTypeface(CONTENT, Typeface.NORMAL + typeface));
         } else {
             tag = addTagStyle(tag, EditorTextStyle.BOLD);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD + typeface));
+            textView.setTypeface(getTypeface(CONTENT, Typeface.BOLD + typeface));
         }
-        editText.setTag(tag);
+        textView.setTag(tag);
     }
 
 
-    public void italic(EditorControl tag, TextView editText, boolean isHeader) {
-        int typeface = isHeader || isBold(tag) ? Typeface.BOLD : Typeface.NORMAL;
-        if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
+    public void italic(EditorControl tag, TextView editText) {
+        int typeface = isHeader(tag) || isBold(tag) ? Typeface.BOLD : Typeface.NORMAL;
+        if (editorCore.containsStyle(tag.styles, EditorTextStyle.ITALIC)) {
             tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
             editText.setTypeface(getTypeface(CONTENT, typeface));
         } else {
@@ -410,7 +411,7 @@ public class InputExtensions {
     }
 
     private boolean isBold(EditorControl tag) {
-        for (EditorTextStyle item : tag.controlStyles) {
+        for (EditorTextStyle item : tag.styles) {
             if (isBold(item)) {
                 return true;
             }
@@ -420,7 +421,7 @@ public class InputExtensions {
     }
 
     private boolean isItalic(EditorControl tag) {
-        for (EditorTextStyle item : tag.controlStyles) {
+        for (EditorTextStyle item : tag.styles) {
             if (isItalic(item)) {
                 return true;
             }
@@ -466,15 +467,12 @@ public class InputExtensions {
                 updateHeaderTextStyle(textView, style);
                 return;
             }
-
             if (isText(style)) {
-                boolean isHeader = isHeader(tag);
+                Log.d("bold", "bold aaa style : " + style);
                 if (style == EditorTextStyle.BOLD) {
-                    if (isHeader)
-                        return;
-                    bold(tag, textView, isHeader);
+                    bold(tag, textView);
                 } else if (style == EditorTextStyle.ITALIC) {
-                    italic(tag, textView, isHeader);
+                    italic(tag, textView);
                 }
                 return;
             }
@@ -482,7 +480,7 @@ public class InputExtensions {
                 int pBottom = textView.getPaddingBottom();
                 int pRight = textView.getPaddingRight();
                 int pTop = textView.getPaddingTop();
-                if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.INDENT)) {
+                if (editorCore.containsStyle(tag.styles, EditorTextStyle.INDENT)) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
                     textView.setPadding(0, pTop, pRight, pBottom);
                     textView.setTag(tag);
@@ -495,7 +493,7 @@ public class InputExtensions {
                 int pBottom = textView.getPaddingBottom();
                 int pRight = textView.getPaddingRight();
                 int pTop = textView.getPaddingTop();
-                if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.INDENT)) {
+                if (editorCore.containsStyle(tag.styles, EditorTextStyle.INDENT)) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
                     textView.setPadding(0, pTop, pRight, pBottom);
                     textView.setTag(tag);

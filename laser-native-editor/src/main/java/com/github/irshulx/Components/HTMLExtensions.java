@@ -1,5 +1,6 @@
 package com.github.irshulx.Components;
 
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -119,6 +120,8 @@ public class HTMLExtensions {
         String classAttr = element.attr("class");
         if (classAttr == null || classAttr.isEmpty())
             return;
+
+        Log.d("renderClass", "renderClass : " + classAttr);
 
         String[] classes = classAttr.split(" ");
         for (String classString : classes) {

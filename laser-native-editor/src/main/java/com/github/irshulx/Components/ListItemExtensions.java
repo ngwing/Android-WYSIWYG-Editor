@@ -251,7 +251,7 @@ public class ListItemExtensions {
 
     private void updateStyle(TableLayout tableLayout, TextView textView) {
         EditorControl control = editorCore.getControlTag(tableLayout);
-        List<EditorTextStyle> controlStyles = control.controlStyles;
+        List<EditorTextStyle> controlStyles = control.styles;
         if (controlStyles == null || controlStyles.isEmpty())
             return;
         for (EditorTextStyle style : controlStyles) {

@@ -306,12 +306,12 @@ public class EditorCore extends LinearLayout {
     }
 
     public EditorControl updateTagStyle(EditorControl controlTag, EditorTextStyle style, Op op) {
-        List<EditorTextStyle> styles = controlTag.controlStyles;
+        List<EditorTextStyle> styles = controlTag.styles;
         if (op == Op.Delete) {
             int index = styles.indexOf(style);
             if (index != -1) {
                 styles.remove(index);
-                controlTag.controlStyles = styles;
+                controlTag.styles = styles;
             }
         } else {
             int index = styles.indexOf(style);
@@ -353,7 +353,7 @@ public class EditorCore extends LinearLayout {
     public EditorControl createTag(ControlType type) {
         EditorControl control = new EditorControl();
         control.type = type;
-        control.controlStyles = new ArrayList<>();
+        control.styles = new ArrayList<>();
         switch (type) {
             case hr:
             case img:
@@ -529,7 +529,7 @@ public class EditorCore extends LinearLayout {
                 case INPUT:
                     EditText edittext = (EditText) view;
                     EditorControl tag = (EditorControl) view.getTag();
-                    node.styles = tag.controlStyles;
+                    node.styles = tag.styles;
                     node.content.add(Html.toHtml(edittext.getText()));
                     list.add(node);
                     break;
@@ -565,7 +565,7 @@ public class EditorCore extends LinearLayout {
                         node.content.add(Html.toHtml(li.getText()));
                     }
                     tag = (EditorControl) view.getTag();
-                    node.styles = tag.controlStyles;
+                    node.styles = tag.styles;
                     list.add(node);
                     break;
                 case map:
