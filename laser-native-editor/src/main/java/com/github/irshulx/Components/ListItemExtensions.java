@@ -41,7 +41,6 @@ import com.github.irshulx.R;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.Op;
 import com.github.irshulx.models.RenderType;
 
 import java.util.List;
@@ -236,11 +235,7 @@ public class ListItemExtensions {
 
     public void updateListStyle(TableLayout tableLayout, EditorTextStyle style) {
         EditorControl control = editorCore.getControlTag(tableLayout);
-        Op op = Op.Insert;
-        boolean containsStyle = editorCore.containsStyle(control.controlStyles, style);
-        if (containsStyle)
-            op = Op.Delete;
-        editorCore.updateTagStyle(control, style, op);
+        editorCore.getInputExtensions().addTagStyle(control, style);
 
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             View childRow = tableLayout.getChildAt(i);

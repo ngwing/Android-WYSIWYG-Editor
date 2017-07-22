@@ -284,18 +284,20 @@ public class InputExtensions {
         return tag;
     }
 
-    private EditorControl deleteTag(EditorControl tag, EditorTextStyle styleToAdd) {
-        tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Delete);
+    public EditorControl deleteTagStyle(EditorControl tag, EditorTextStyle style) {
+        tag = editorCore.updateTagStyle(tag, style, Op.Delete);
         return tag;
     }
 
-    private EditorControl addTag(EditorControl tag, EditorTextStyle styleToAdd) {
+    public EditorControl addTagStyle(EditorControl tag, EditorTextStyle style) {
         if (isHeader(tag)) {
+            if (style == EditorTextStyle.BOLD)
+                return tag;
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.H2, Op.Delete);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.H3, Op.Delete);
         }
-        tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Insert);
+        tag = editorCore.updateTagStyle(tag, style, Op.Insert);
         return tag;
     }
 
@@ -336,7 +338,7 @@ public class InputExtensions {
                     typeface += Typeface.ITALIC;
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
                 textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
-                tag = deleteTag(editorControl, style);
+                tag = deleteTagStyle(editorControl, style);
             } else {
                 typeface = Typeface.BOLD;
                 if (containsItalic)
@@ -344,13 +346,13 @@ public class InputExtensions {
                 int textSize = getTextStyleFromStyle(style);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
                 textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
-                tag = addTag(editorControl, style);
+                tag = addTagStyle(editorControl, style);
             }
             textView.setTag(tag);
         }
     }
 
-    private boolean isHeader(EditorControl tag) {
+    public boolean isHeader(EditorControl tag) {
         for (EditorTextStyle item : tag.controlStyles) {
             if (isHeader(item)) {
                 return true;
