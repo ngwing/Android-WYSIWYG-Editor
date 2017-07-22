@@ -321,10 +321,9 @@ public class HTMLExtensions {
         EditorTextStyle style = null;
         while (iter.hasNext()) {
             style = iter.next();
-            sb.append(".");
             sb.append(style.name().toLowerCase());
             if (iter.hasNext())
-                sb.append(",");
+                sb.append(" ");
         }
         return sb.toString();
     }
