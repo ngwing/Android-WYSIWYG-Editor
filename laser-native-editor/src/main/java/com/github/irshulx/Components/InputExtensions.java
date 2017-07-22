@@ -293,9 +293,11 @@ public class InputExtensions {
         if (isHeader(tag)) {
             if (style == EditorTextStyle.BOLD)
                 return tag;
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H2, Op.Delete);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H3, Op.Delete);
+            if (isHeader(style)) {
+                tag = deleteTagStyle(tag, EditorTextStyle.H1);
+                tag = deleteTagStyle(tag, EditorTextStyle.H2);
+                tag = deleteTagStyle(tag, EditorTextStyle.H3);
+            }
         }
         tag = editorCore.updateTagStyle(tag, style, Op.Insert);
         return tag;
