@@ -412,7 +412,6 @@ public class InputExtensions {
     }
 
     public void italicizeText(EditorControl tag, TextView editText, boolean isHeader) {
-
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
             tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
             editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
