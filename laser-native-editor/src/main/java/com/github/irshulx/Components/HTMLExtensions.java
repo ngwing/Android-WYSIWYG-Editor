@@ -206,8 +206,8 @@ public class HTMLExtensions {
         //  CharSequence content= android.text.Html.fromHtml(item.content.get(0)).toString();
         //  CharSequence trimmed= editorCore.getInputExtensions().noTrailingwhiteLines(content);
         String trimmed = Jsoup.parse(item.content.get(0)).body().select("p").html();
-        if (item.contentStyles.size() > 0) {
-            for (EditorTextStyle style : item.contentStyles) {
+        if (item.styles.size() > 0) {
+            for (EditorTextStyle style : item.styles) {
                 switch (style) {
                     case BOLD:
                         tmpl = tmpl.replace("{{$content}}", "<b>{{$content}}</b>");
@@ -314,11 +314,11 @@ public class HTMLExtensions {
 
     private String getCSSClass(Node item) {
         StringBuilder sb = new StringBuilder();
-        List<EditorTextStyle> contentStyles = item.contentStyles;
-        if (contentStyles == null || contentStyles.isEmpty())
+        List<EditorTextStyle> styles = item.styles;
+        if (styles == null || styles.isEmpty())
             return "";
-        Iterator<EditorTextStyle> iter = contentStyles.iterator();
-        EditorTextStyle style = null;
+        Iterator<EditorTextStyle> iter = styles.iterator();
+        EditorTextStyle style;
         while (iter.hasNext()) {
             style = iter.next();
             sb.append(style.name().toLowerCase());

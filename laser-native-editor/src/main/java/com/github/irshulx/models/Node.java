@@ -6,5 +6,5 @@ import java.util.List;
 public class Node {
     public ControlType type;
     public ArrayList<String> content;
-    public List<EditorTextStyle> contentStyles;
+    public List<EditorTextStyle> styles;
 }

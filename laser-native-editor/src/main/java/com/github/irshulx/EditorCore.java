@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -530,7 +529,7 @@ public class EditorCore extends LinearLayout {
                 case INPUT:
                     EditText edittext = (EditText) view;
                     EditorControl tag = (EditorControl) view.getTag();
-                    node.contentStyles = tag.controlStyles;
+                    node.styles = tag.controlStyles;
                     node.content.add(Html.toHtml(edittext.getText()));
                     list.add(node);
                     break;
@@ -566,7 +565,7 @@ public class EditorCore extends LinearLayout {
                         node.content.add(Html.toHtml(li.getText()));
                     }
                     tag = (EditorControl) view.getTag();
-                    node.contentStyles = tag.controlStyles;
+                    node.styles = tag.controlStyles;
                     list.add(node);
                     break;
                 case map:
@@ -588,8 +587,8 @@ public class EditorCore extends LinearLayout {
                 case INPUT:
                     String text = item.content.get(0);
                     TextView view = inputExtensions.insertEditText(0, this.placeHolder, text);
-                    if (item.contentStyles != null) {
-                        for (EditorTextStyle style : item.contentStyles) {
+                    if (item.styles != null) {
+                        for (EditorTextStyle style : item.styles) {
                             inputExtensions.updateTextStyle(style, view);
                         }
                     }
