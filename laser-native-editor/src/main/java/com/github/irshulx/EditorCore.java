@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -368,14 +369,15 @@ public class EditorCore extends LinearLayout {
         int index = parentView.indexOfChild(view);
         if (index == 0)
             return;
-        EditorControl contentType = (EditorControl) ((View) view.getParent()).getTag();
+        EditorControl editorControl = (EditorControl) ((View) view.getParent()).getTag();
+        Log.d("deleteFocusedPrevious", "deleteFocusedPrevious : contentType : " + editorControl.type);
         /*
          *
          * If the person was on an active ul|li, move him to the previous node
          *
          */
-        if (contentType != null && (contentType.type == ControlType.OL_LI || contentType.type == ControlType.UL_LI)) {
-            listItemExtensions.validateAndRemoveLisNode(view, contentType);
+        if (editorControl != null && (editorControl.type == ControlType.OL_LI || editorControl.type == ControlType.UL_LI)) {
+            listItemExtensions.validateAndRemoveLisNode(view, editorControl);
             return;
         }
 
@@ -736,7 +738,7 @@ public class EditorCore extends LinearLayout {
         switch (control.type) {
             case ul:
             case ol:
-                parentView.removeAllViews();
+//                parentView.removeAllViews();
                 break;
         }
 

@@ -233,13 +233,6 @@ public class ListItemExtensions {
         }
     }
 
-    public void updateListStyle(TextView textView, EditorTextStyle style) {
-        if (textView == null)
-            return;
-        TableLayout tableLayout = (TableLayout) textView.getTag(R.id.outter_tag);
-        updateListStyle(tableLayout, style);
-    }
-
 
     public void updateListStyle(TableLayout tableLayout, EditorTextStyle style) {
         EditorControl control = editorCore.getControlTag(tableLayout);
@@ -248,12 +241,13 @@ public class ListItemExtensions {
         if (containsStyle)
             op = Op.Delete;
         editorCore.updateTagStyle(control, style, op);
+
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             View childRow = tableLayout.getChildAt(i);
             CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
             TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
-            editorCore.getInputExtensions().updateTextStyle(style, editText, false);
-            editorCore.getInputExtensions().updateTextStyle(style, bullet, false);
+            editorCore.getInputExtensions().updateTextViewStyle(style, editText);
+            editorCore.getInputExtensions().updateTextViewStyle(style, bullet);
         }
     }
 
@@ -262,8 +256,9 @@ public class ListItemExtensions {
         List<EditorTextStyle> controlStyles = control.controlStyles;
         if (controlStyles == null || controlStyles.isEmpty())
             return;
-        EditorTextStyle style = controlStyles.get(controlStyles.size() - 1);
-        editorCore.getInputExtensions().updateTextStyle(style, textView, false);
+        for (EditorTextStyle style : controlStyles) {
+            editorCore.getInputExtensions().updateTextViewStyle(style, textView);
+        }
     }
 
     public void convertListToUnordered(TableLayout tableLayout) {
@@ -293,10 +288,10 @@ public class ListItemExtensions {
                  on unordered list icon, loop through the parents childs and convert each list item into normal edittext
                  *
                  */
-            TableRow _row = (TableRow) activeView.getParent();
-            TableLayout tableLayout = (TableLayout) _row.getParent();
-            convertListToNormalText(tableLayout, tableLayout.indexOfChild(_row));
-                    /* this means, current focus is on n unordered list item, since user clicked
+            TableRow row = (TableRow) activeView.getParent();
+            TableLayout tableLayout = (TableLayout) row.getParent();
+            convertListToNormalText(tableLayout, tableLayout.indexOfChild(row));
+                /* this means, current focus is on n unordered list item, since user clicked
                  on unordered list icon, loop through the parents childs and convert each list item into normal edittext
                  *
                  */
@@ -424,22 +419,21 @@ public class ListItemExtensions {
         TableRow _row = (TableRow) view.getParent();
         TableLayout tableLayout = (TableLayout) _row.getParent();
         int indexOnList = tableLayout.indexOfChild(_row);
-        tableLayout.removeView(_row);
         if (indexOnList > 0) {
             /**
              * check if the index of the deleted row is <0, if so, move the focus to the previous li
              */
             TableRow focusrow = (TableRow) tableLayout.getChildAt(indexOnList - 1);
-            EditText text = (EditText) focusrow.findViewById(R.id.editText);
+            final EditText editText = (EditText) focusrow.findViewById(R.id.editText);
             /**
              * Rearrange the nodes
              */
-            if (contentType.type == ControlType.OL_LI) {
+            if (contentType.type == ControlType.OL_LI)
                 rearrangeColumns(tableLayout);
+            if (editText.requestFocus()) {
+                editText.setSelection(editText.getText().length());
             }
-            if (text.requestFocus()) {
-                text.setSelection(text.getText().length());
-            }
+            tableLayout.removeView(_row);
         } else {
             /**
              * The removed row was first on the list. delete the list, and set the focus to previous element on the editor

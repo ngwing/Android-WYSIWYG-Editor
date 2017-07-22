@@ -28,7 +28,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -285,11 +284,11 @@ public class InputExtensions {
         return tag;
     }
 
-    public boolean isEditorTextStyleHeaders(EditorTextStyle editorTextStyle) {
+    public boolean isHeader(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.H1 || editorTextStyle == EditorTextStyle.H2 || editorTextStyle == EditorTextStyle.H3;
     }
 
-    public boolean isEditorTextStyleContentStyles(EditorTextStyle editorTextStyle) {
+    public boolean isText(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.BOLDITALIC || editorTextStyle == EditorTextStyle.ITALIC;
     }
 
@@ -313,7 +312,7 @@ public class InputExtensions {
 
         boolean isListLabel = textView.getId() == R.id.labelOrder;
 
-        if (isEditorTextStyleHeaders(editorTextStyle)) {
+        if (isHeader(editorTextStyle)) {
             boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
             int typeface = Typeface.NORMAL;
             if (containsStyle) {
@@ -332,9 +331,37 @@ public class InputExtensions {
         }
     }
 
-    private boolean containsHeaderTextStyle(EditorControl tag) {
+    private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle, Op op) {
+        EditorControl tag;
+        if (textView == null)
+            textView = (TextView) editorCore.getActiveView();
+
+        EditorControl editorControl = editorCore.getControlTag(textView);
+
+        boolean isListLabel = textView.getId() == R.id.labelOrder;
+
+        if (isHeader(editorTextStyle)) {
+//            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
+            int typeface = Typeface.NORMAL;
+            if (op == Op.Delete) {
+                if (isListLabel)
+                    typeface = Typeface.BOLD;
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
+                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
+                tag = rewriteTags(editorControl, EditorTextStyle.NORMAL);
+            } else {
+                int textSize = getTextStyleFromStyle(editorTextStyle);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
+                tag = rewriteTags(editorControl, editorTextStyle);
+            }
+            textView.setTag(tag);
+        }
+    }
+
+    private boolean isHeader(EditorControl tag) {
         for (EditorTextStyle item : tag.controlStyles) {
-            if (isEditorTextStyleHeaders(item)) {
+            if (isHeader(item)) {
                 return true;
             }
             continue;
@@ -343,73 +370,116 @@ public class InputExtensions {
     }
 
 
-    public void boldifyText(EditorControl tag, TextView editText, int textMode) {
+    public void boldifyText(EditorControl tag, TextView editText, boolean isHeader) {
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Delete);
-            editText.setTypeface(getTypeface(textMode, Typeface.NORMAL));
+            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
         } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLDITALIC)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Delete);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Insert);
-            editText.setTypeface(getTypeface(textMode, Typeface.ITALIC));
+            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD_ITALIC : Typeface.ITALIC));
         } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Insert);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Delete);
-            editText.setTypeface(getTypeface(textMode, Typeface.BOLD_ITALIC));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD_ITALIC));
         } else {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Insert);
-            editText.setTypeface(getTypeface(textMode, Typeface.BOLD));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD));
         }
         editText.setTag(tag);
     }
 
-    public void italicizeText(EditorControl tag, TextView editText, int textMode) {
+    private int getTypefaceStyle(EditorTextStyle style) {
+        switch (style) {
+            case BOLD:
+                return Typeface.BOLD;
+            case ITALIC:
+                return Typeface.BOLD;
+            case BOLDITALIC:
+                return Typeface.BOLD_ITALIC;
+        }
+        return -1;
+    }
+
+    public void boldifyText(EditorControl tag, TextView editText, int textMode, EditorTextStyle style, Op op) {
+        if (op == Op.Delete) {
+            tag.controlStyles.clear();
+            editText.setTypeface(getTypeface(textMode, Typeface.NORMAL));
+        } else {
+            int typefaceInt = getTypefaceStyle(style);
+            editorCore.updateTagStyle(tag, style, Op.Insert);
+            editText.setTypeface(getTypeface(textMode, typefaceInt));
+        }
+    }
+
+    public void italicizeText(EditorControl tag, TextView editText, boolean isHeader) {
 
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Delete);
-            editText.setTypeface(getTypeface(textMode, Typeface.NORMAL));
+            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
         } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLDITALIC)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Delete);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Insert);
-            editText.setTypeface(getTypeface(textMode, Typeface.BOLD));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD));
         } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Insert);
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Delete);
-            editText.setTypeface(getTypeface(textMode, Typeface.BOLD_ITALIC));
+            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD_ITALIC));
         } else {
             tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Insert);
-            editText.setTypeface(getTypeface(textMode, Typeface.ITALIC));
+            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD_ITALIC : Typeface.ITALIC));
         }
         editText.setTag(tag);
     }
 
 
     public void updateTextStyle(EditorTextStyle style, TextView textView) {
-        updateTextStyle(style, textView, true);
+        if (isList(textView)) {
+            updateListStyle(textView, style);
+            return;
+        }
+        updateTextViewStyle(style, textView);
     }
 
-    public void updateTextStyle(EditorTextStyle style, TextView textView, boolean checkTable) {
+
+    private boolean isList(TextView textView) {
+        if (textView == null)
+            textView = (TextView) editorCore.getActiveView();
+        if (textView == null)
+            return false;
+        Object outterTag = textView.getTag(R.id.outter_tag);
+        return outterTag != null && outterTag instanceof TableLayout;
+    }
+
+    public void updateListStyle(TextView textView, EditorTextStyle style) {
+        if (textView == null)
+            textView = (TextView) editorCore.getActiveView();
+        if (textView == null)
+            return;
+        Object outterTag = textView.getTag(R.id.outter_tag);
+        editorCore.getListItemExtensions().updateListStyle((TableLayout) outterTag, style);
+    }
+
+    public void updateTextViewStyle(EditorTextStyle style, TextView textView) {
         try {
             if (textView == null)
                 textView = (TextView) editorCore.getActiveView();
 
-            Object outterTag = textView.getTag(R.id.outter_tag);
-            if (checkTable && outterTag != null && outterTag instanceof TableLayout) {
-                editorCore.getListItemExtensions().updateListStyle((TableLayout) outterTag, style);
-                return;
-            }
-
             EditorControl tag = editorCore.getControlTag(textView);
 
-            if (isEditorTextStyleHeaders(style)) {
+            if (isHeader(style)) {
                 updateHeaderTextStyle(textView, style);
                 return;
             }
-            if (isEditorTextStyleContentStyles(style)) {
-                boolean containsHeadertextStyle = containsHeaderTextStyle(tag);
+
+            if (isText(style)) {
+                boolean isHeader = isHeader(tag);
                 if (style == EditorTextStyle.BOLD) {
-                    boldifyText(tag, textView, containsHeadertextStyle ? HEADING : CONTENT);
+                    if (isHeader)
+                        return;
+                    boldifyText(tag, textView, isHeader);
                 } else if (style == EditorTextStyle.ITALIC) {
-                    italicizeText(tag, textView, containsHeadertextStyle ? HEADING : CONTENT);
+                    italicizeText(tag, textView, isHeader);
                 }
                 return;
             }
@@ -439,7 +509,6 @@ public class InputExtensions {
         } catch (Exception e) {
 
         }
-
     }
 
     public void insertLink() {
