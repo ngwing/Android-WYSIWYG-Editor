@@ -370,7 +370,6 @@ public class EditorCore extends LinearLayout {
         if (index == 0)
             return;
         EditorControl editorControl = (EditorControl) ((View) view.getParent()).getTag();
-        Log.d("deleteFocusedPrevious", "deleteFocusedPrevious : contentType : " + editorControl.type);
         /*
          *
          * If the person was on an active ul|li, move him to the previous node
