@@ -1,6 +1,5 @@
 package com.github.irshulx.Components;
 
-import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -99,8 +98,6 @@ public class HTMLExtensions {
         if (classAttr == null || classAttr.isEmpty())
             return;
 
-        Log.d("renderClass", "renderClass : " + classAttr);
-
         String[] classes = classAttr.split(" ");
         for (String classString : classes) {
             EditorTextStyle style = EditorTextStyle.valueOf(classString.toUpperCase());
@@ -144,6 +141,7 @@ public class HTMLExtensions {
             String text = getHtmlSpan(li);
             TableLayout tableLayout = editorCore.getListItemExtensions().insertList(editorCore.getParentChildCount(), isOrdered, text);
             for (int i = 1; i < element.children().size(); i++) {
+                li = element.child(i);
                 text = getHtmlSpan(li);
                 editorCore.getListItemExtensions().addListItem(tableLayout, isOrdered, text);
             }

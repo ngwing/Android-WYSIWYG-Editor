@@ -28,7 +28,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -384,29 +383,19 @@ public class InputExtensions {
 
 
     public void bold(EditorControl tag, TextView textView) {
-        Log.d("bold", "bold111");
         boolean isHeader = isHeader(tag);
-        Log.d("bold", "bold111 isHeader : " + isHeader);
         if (isHeader)
             return;
-        Log.d("bold", "bold...");
-
         int typeface = isItalic(tag) ? Typeface.ITALIC : Typeface.NORMAL;
 
-        Log.d("bold", "bold... 222");
         boolean containsStyle = containsStyle(tag, EditorTextStyle.BOLD);
 
         if (containsStyle) {
-            Log.d("bold", "bold... delete");
             tag = deleteTagStyle(tag, EditorTextStyle.BOLD);
             textView.setTypeface(getTypeface(CONTENT, Typeface.NORMAL + typeface));
         } else {
-
-            Log.d("bold", "bold... add tag : " + tag);
             tag = addTagStyle(tag, EditorTextStyle.BOLD);
             textView.setTypeface(getTypeface(CONTENT, Typeface.BOLD + typeface));
-
-            Log.d("bold", "bold... add 222");
         }
         textView.setTag(tag);
     }
@@ -501,7 +490,6 @@ public class InputExtensions {
                 return;
             }
             if (isText(style)) {
-                Log.d("bold", "bold aaa style : " + style);
                 if (style == EditorTextStyle.BOLD) {
                     bold(tag, textView);
                 } else if (style == EditorTextStyle.ITALIC) {
