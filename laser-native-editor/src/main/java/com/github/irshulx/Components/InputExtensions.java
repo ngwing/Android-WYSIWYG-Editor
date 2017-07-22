@@ -320,8 +320,6 @@ public class InputExtensions {
 
         EditorControl editorControl = editorCore.getControlTag(textView);
 
-        boolean isListLabel = textView.getId() == R.id.labelOrder;
-
         boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC)
                 || editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.BOLDITALIC);
 
@@ -329,8 +327,6 @@ public class InputExtensions {
             boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, style);
             int typeface = Typeface.NORMAL;
             if (containsStyle) {
-                if (isListLabel)
-                    typeface = Typeface.BOLD;
                 if (containsItalic)
                     typeface += Typeface.ITALIC;
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
@@ -344,34 +340,6 @@ public class InputExtensions {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
                 textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
                 tag = addTag(editorControl, style);
-            }
-            textView.setTag(tag);
-        }
-    }
-
-    private void updateHeaderTextStyle(TextView textView, EditorTextStyle editorTextStyle, Op op) {
-        EditorControl tag;
-        if (textView == null)
-            textView = (TextView) editorCore.getActiveView();
-
-        EditorControl editorControl = editorCore.getControlTag(textView);
-
-        boolean isListLabel = textView.getId() == R.id.labelOrder;
-
-        if (isHeader(editorTextStyle)) {
-//            boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, editorTextStyle);
-            int typeface = Typeface.NORMAL;
-            if (op == Op.Delete) {
-                if (isListLabel)
-                    typeface = Typeface.BOLD;
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMAL_TEXT_SIZE);
-                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), typeface));
-                tag = rewriteTags(editorControl, EditorTextStyle.NORMAL);
-            } else {
-                int textSize = getTextStyleFromStyle(editorTextStyle);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-                textView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
-                tag = rewriteTags(editorControl, editorTextStyle);
             }
             textView.setTag(tag);
         }
