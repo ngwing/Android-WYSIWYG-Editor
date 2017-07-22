@@ -237,6 +237,9 @@ public class ListItemExtensions {
         EditorControl control = editorCore.getControlTag(tableLayout);
         editorCore.getInputExtensions().addTagStyle(control, style);
 
+        if (style == EditorTextStyle.BOLD && editorCore.getInputExtensions().isHeader(control))
+            return;
+
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             View childRow = tableLayout.getChildAt(i);
             CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
