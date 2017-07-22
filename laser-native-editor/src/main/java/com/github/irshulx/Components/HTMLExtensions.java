@@ -77,6 +77,7 @@ public class HTMLExtensions {
                 parseHtml(html);
                 break;
         }
+        renderClass(element);
     }
 
 
@@ -110,6 +111,21 @@ public class HTMLExtensions {
                     editorCore.getInputExtensions().updateTextStyle(EditorTextStyle.ITALIC, null);
                     break;
             }
+        }
+    }
+
+
+    private void renderClass(Element element) {
+        String classAttr = element.attr("class");
+        if (classAttr == null || classAttr.isEmpty())
+            return;
+
+        String[] classes = classAttr.split(" ");
+        for (String classString : classes) {
+            EditorTextStyle style = EditorTextStyle.valueOf(classString.toUpperCase());
+            if (style == null)
+                continue;
+            editorCore.getInputExtensions().updateTextStyle(style, null);
         }
     }
 
@@ -172,7 +188,7 @@ public class HTMLExtensions {
         String template = null;
         switch (child) {
             case INPUT:
-                template = "<{{$tag}} data-tag=\"input\" {{$style}}>{{$content}}</{{$tag}}>";
+                template = "<{{$tag}} class = \"{{$class}}\" data-tag=\"input\" >{{$content}}</{{$tag}}>";
                 break;
             case hr:
                 template = "<hr data-tag=\"hr\"/>";
@@ -206,23 +222,15 @@ public class HTMLExtensions {
         //  CharSequence content= android.text.Html.fromHtml(item.content.get(0)).toString();
         //  CharSequence trimmed= editorCore.getInputExtensions().noTrailingwhiteLines(content);
         String trimmed = Jsoup.parse(item.content.get(0)).body().select("p").html();
+        StringBuilder textClassStringBuilder = new StringBuilder();
         if (item.styles.size() > 0) {
             for (EditorTextStyle style : item.styles) {
                 switch (style) {
                     case BOLD:
-                        tmpl = tmpl.replace("{{$content}}", "<b>{{$content}}</b>");
-                        break;
-                    case BOLDITALIC:
-                        tmpl = tmpl.replace("{{$content}}", "<b><i>{{$content}}</i></b>");
-                        break;
                     case ITALIC:
-                        tmpl = tmpl.replace("{{$content}}", "<i>{{$content}}</i>");
-                        break;
                     case INDENT:
-                        tmpl = tmpl.replace("{{$style}}", "style=\"margin-left:25px\"");
-                        break;
                     case OUTDENT:
-                        tmpl = tmpl.replace("{{$style}}", "style=\"margin-left:0px\"");
+                        append(textClassStringBuilder, style);
                         break;
                     case H1:
                         tmpl = tmpl.replace("{{$tag}}", "h1");
@@ -242,17 +250,21 @@ public class HTMLExtensions {
                         break;
                 }
             }
-            if (isParagraph) {
+            if (isParagraph)
                 tmpl = tmpl.replace("{{$tag}}", "p");
-            }
             tmpl = tmpl.replace("{{$content}}", trimmed);
-            tmpl = tmpl.replace("{{$style}}", "");
+            tmpl = tmpl.replace("{{$class}}", textClassStringBuilder.toString());
             return tmpl;
         }
         tmpl = tmpl.replace("{{$tag}}", "p");
         tmpl = tmpl.replace("{{$content}}", trimmed);
-        tmpl = tmpl.replace(" {{$style}}", "");
         return tmpl;
+    }
+
+    private void append(StringBuilder stringBuilder, EditorTextStyle style) {
+        if (stringBuilder.length() > 0)
+            stringBuilder.append(" ");
+        stringBuilder.append(style.name().toLowerCase());
     }
 
     public String getContentAsHTML() {

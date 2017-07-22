@@ -324,7 +324,7 @@ public class InputExtensions {
     }
 
     public boolean isText(EditorTextStyle editorTextStyle) {
-        return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.BOLDITALIC || editorTextStyle == EditorTextStyle.ITALIC;
+        return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.ITALIC;
     }
 
 
@@ -345,8 +345,7 @@ public class InputExtensions {
 
         EditorControl editorControl = editorCore.getControlTag(textView);
 
-        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC)
-                || editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.BOLDITALIC);
+        boolean containsItalic = editorCore.containsStyle(editorControl.controlStyles, EditorTextStyle.ITALIC);
 
         if (isHeader(style)) {
             boolean containsStyle = editorCore.containsStyle(editorControl.controlStyles, style);
@@ -430,7 +429,6 @@ public class InputExtensions {
         return false;
     }
 
-
     public void updateTextStyle(EditorTextStyle style, TextView textView) {
         if (isList(textView)) {
             updateListStyle(textView, style);
@@ -438,7 +436,6 @@ public class InputExtensions {
         }
         updateTextViewStyle(style, textView);
     }
-
 
     private boolean isList(TextView textView) {
         if (textView == null)
