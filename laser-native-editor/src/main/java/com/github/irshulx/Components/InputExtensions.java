@@ -290,6 +290,11 @@ public class InputExtensions {
     }
 
     private EditorControl addTag(EditorControl tag, EditorTextStyle styleToAdd) {
+        if (isHeader(tag)) {
+            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
+            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H2, Op.Delete);
+            tag = editorCore.updateTagStyle(tag, EditorTextStyle.H3, Op.Delete);
+        }
         tag = editorCore.updateTagStyle(tag, styleToAdd, Op.Insert);
         return tag;
     }

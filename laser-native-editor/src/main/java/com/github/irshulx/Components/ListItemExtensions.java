@@ -86,7 +86,7 @@ public class ListItemExtensions {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.listItemTemplate, null);
         final CustomEditText editText = (CustomEditText) childLayout.findViewById(R.id.editText);
         final TextView orderTextView = (TextView) childLayout.findViewById(R.id.labelOrder);
-        orderTextView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
+        orderTextView.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.NORMAL));
         editText.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.NORMAL));
         if (isOrdered) {
             int count = tableLayout.getChildCount();
