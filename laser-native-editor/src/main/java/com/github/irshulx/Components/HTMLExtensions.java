@@ -6,9 +6,9 @@ import android.widget.TextView;
 
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.Utilities.ImageUrlWrapper;
+import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.EditorTextStyle;
-import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.HtmlTag;
 import com.github.irshulx.models.Node;
 
@@ -58,14 +58,17 @@ public class HTMLExtensions {
             case h1:
             case h2:
             case h3:
-                renderHeader(tag, element);
+                TextView header = renderHeader(tag, element);
+                renderClass(element, header);
                 break;
             case p:
-                parseParagraph(element);
+                TextView tv = renderParagraph(element);
+                renderClass(element, tv);
                 break;
             case ul:
             case ol:
-                renderList(tag == HtmlTag.ol, element);
+                TableLayout tableLayout = renderList(tag == HtmlTag.ol, element);
+                renderClass(element, tableLayout);
                 break;
             case img:
                 renderImage(element);
@@ -78,7 +81,6 @@ public class HTMLExtensions {
                 parseHtml(html);
                 break;
         }
-        renderClass(element);
     }
 
 
@@ -87,36 +89,12 @@ public class HTMLExtensions {
         return children != null && children.size() > 0;
     }
 
-    private void parseParagraph(Element element) {
-
-        boolean hasChild = hasChild(element);
-
-        if (!hasChild) {
-            editorCore.getInputExtensions().insertEditText(editorCore.getParentChildCount(), null, element.html());
-            return;
-        }
-
-        if (hasChild) {
-            Element child = element.child(0);
-            HtmlTag tag = HtmlTag.valueOf(child.tagName().toLowerCase());
-            switch (tag) {
-                case p:
-                    parseParagraph(child);
-                    break;
-                case b:
-                    parseParagraph(child);
-                    editorCore.getInputExtensions().updateTextStyle(EditorTextStyle.BOLD, null);
-                    break;
-                case i:
-                    parseParagraph(child);
-                    editorCore.getInputExtensions().updateTextStyle(EditorTextStyle.ITALIC, null);
-                    break;
-            }
-        }
+    private TextView renderParagraph(Element element) {
+        return editorCore.getInputExtensions().insertEditText(editorCore.getParentChildCount(), null, element.html());
     }
 
 
-    private void renderClass(Element element) {
+    private void renderClass(Element element, TextView textView) {
         String classAttr = element.attr("class");
         if (classAttr == null || classAttr.isEmpty())
             return;
@@ -128,7 +106,21 @@ public class HTMLExtensions {
             EditorTextStyle style = EditorTextStyle.valueOf(classString.toUpperCase());
             if (style == null)
                 continue;
-            editorCore.getInputExtensions().updateTextStyle(style, null);
+            editorCore.getInputExtensions().updateTextStyle(style, textView);
+        }
+    }
+
+    private void renderClass(Element element, TableLayout tableLayout) {
+        String classAttr = element.attr("class");
+        if (classAttr == null || classAttr.isEmpty())
+            return;
+
+        String[] classes = classAttr.split(" ");
+        for (String classString : classes) {
+            EditorTextStyle style = EditorTextStyle.valueOf(classString.toUpperCase());
+            if (style == null)
+                continue;
+            editorCore.getListItemExtensions().updateListStyle(tableLayout, style);
         }
     }
 
@@ -146,24 +138,27 @@ public class HTMLExtensions {
         editorCore.getAudioExtensions().insertAudio(url);
     }
 
-    private void renderList(boolean isOrdered, Element element) {
+    private TableLayout renderList(boolean isOrdered, Element element) {
         if (element.children().size() > 0) {
             Element li = element.child(0);
             String text = getHtmlSpan(li);
-            TableLayout layout = editorCore.getListItemExtensions().insertList(editorCore.getParentChildCount(), isOrdered, text);
+            TableLayout tableLayout = editorCore.getListItemExtensions().insertList(editorCore.getParentChildCount(), isOrdered, text);
             for (int i = 1; i < element.children().size(); i++) {
                 text = getHtmlSpan(li);
-                editorCore.getListItemExtensions().addListItem(layout, isOrdered, text);
+                editorCore.getListItemExtensions().addListItem(tableLayout, isOrdered, text);
             }
+            return tableLayout;
         }
+        return null;
     }
 
-    private void renderHeader(HtmlTag tag, Element element) {
+    private TextView renderHeader(HtmlTag tag, Element element) {
         int count = editorCore.getParentView().getChildCount();
         String text = getHtmlSpan(element);
         TextView editText = editorCore.getInputExtensions().insertEditText(count, null, text);
         EditorTextStyle style = tag == HtmlTag.h1 ? EditorTextStyle.H1 : tag == HtmlTag.h2 ? EditorTextStyle.H2 : EditorTextStyle.H3;
         editorCore.getInputExtensions().updateTextStyle(style, editText);
+        return editText;
     }
 
     private String getHtmlSpan(Element element) {

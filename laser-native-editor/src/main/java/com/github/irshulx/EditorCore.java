@@ -296,22 +296,24 @@ public class EditorCore extends LinearLayout {
     }
 
     public boolean containsStyle(List<EditorTextStyle> styles, EditorTextStyle style) {
+        if (styles == null || styles.isEmpty())
+            return false;
         for (EditorTextStyle item : styles) {
-            if (item == style) {
+            if (item == style)
                 return true;
-            }
-            continue;
         }
         return false;
     }
 
-    public EditorControl updateTagStyle(EditorControl controlTag, EditorTextStyle style, Op op) {
-        List<EditorTextStyle> styles = controlTag.styles;
+    public EditorControl updateTagStyle(EditorControl control, EditorTextStyle style, Op op) {
+        List<EditorTextStyle> styles = control.styles;
+        if (styles == null)
+            return control;
         if (op == Op.Delete) {
             int index = styles.indexOf(style);
             if (index != -1) {
                 styles.remove(index);
-                controlTag.styles = styles;
+                control.styles = styles;
             }
         } else {
             int index = styles.indexOf(style);
@@ -319,7 +321,7 @@ public class EditorCore extends LinearLayout {
                 styles.add(style);
             }
         }
-        return controlTag;
+        return control;
     }
 
     public ControlType getControlType(int index) {

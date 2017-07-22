@@ -52,6 +52,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -383,24 +384,52 @@ public class InputExtensions {
 
 
     public void bold(EditorControl tag, TextView textView) {
-        if (isHeader(tag))
+        Log.d("bold", "bold111");
+        boolean isHeader = isHeader(tag);
+        Log.d("bold", "bold111 isHeader : " + isHeader);
+        if (isHeader)
             return;
+        Log.d("bold", "bold...");
+
         int typeface = isItalic(tag) ? Typeface.ITALIC : Typeface.NORMAL;
 
-        if (editorCore.containsStyle(tag.styles, EditorTextStyle.BOLD)) {
+        Log.d("bold", "bold... 222");
+        boolean containsStyle = containsStyle(tag, EditorTextStyle.BOLD);
+
+        if (containsStyle) {
+            Log.d("bold", "bold... delete");
             tag = deleteTagStyle(tag, EditorTextStyle.BOLD);
             textView.setTypeface(getTypeface(CONTENT, Typeface.NORMAL + typeface));
         } else {
+
+            Log.d("bold", "bold... add tag : " + tag);
             tag = addTagStyle(tag, EditorTextStyle.BOLD);
             textView.setTypeface(getTypeface(CONTENT, Typeface.BOLD + typeface));
+
+            Log.d("bold", "bold... add 222");
         }
         textView.setTag(tag);
+    }
+
+    private boolean containsStyle(EditorControl tag, EditorTextStyle style) {
+        if (tag == null)
+            return false;
+        List<EditorTextStyle> styles = tag.styles;
+        if (styles == null || styles.isEmpty())
+            return false;
+        for (EditorTextStyle item : styles) {
+            if (item == style)
+                return true;
+        }
+        return false;
     }
 
 
     public void italic(EditorControl tag, TextView editText) {
         int typeface = isHeader(tag) || isBold(tag) ? Typeface.BOLD : Typeface.NORMAL;
-        if (editorCore.containsStyle(tag.styles, EditorTextStyle.ITALIC)) {
+
+        boolean containsStyle = containsStyle(tag, EditorTextStyle.ITALIC);
+        if (containsStyle) {
             tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
             editText.setTypeface(getTypeface(CONTENT, typeface));
         } else {
@@ -411,6 +440,8 @@ public class InputExtensions {
     }
 
     private boolean isBold(EditorControl tag) {
+        if (tag == null || tag.styles == null)
+            return false;
         for (EditorTextStyle item : tag.styles) {
             if (isBold(item)) {
                 return true;
@@ -421,6 +452,8 @@ public class InputExtensions {
     }
 
     private boolean isItalic(EditorControl tag) {
+        if (tag == null || tag.styles == null)
+            return false;
         for (EditorTextStyle item : tag.styles) {
             if (isItalic(item)) {
                 return true;
@@ -480,7 +513,8 @@ public class InputExtensions {
                 int pBottom = textView.getPaddingBottom();
                 int pRight = textView.getPaddingRight();
                 int pTop = textView.getPaddingTop();
-                if (editorCore.containsStyle(tag.styles, EditorTextStyle.INDENT)) {
+                boolean containsStyle = containsStyle(tag, EditorTextStyle.INDENT);
+                if (containsStyle) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
                     textView.setPadding(0, pTop, pRight, pBottom);
                     textView.setTag(tag);
@@ -493,7 +527,8 @@ public class InputExtensions {
                 int pBottom = textView.getPaddingBottom();
                 int pRight = textView.getPaddingRight();
                 int pTop = textView.getPaddingTop();
-                if (editorCore.containsStyle(tag.styles, EditorTextStyle.INDENT)) {
+                boolean containsStyle = containsStyle(tag, EditorTextStyle.INDENT);
+                if (containsStyle) {
                     tag = editorCore.updateTagStyle(tag, EditorTextStyle.INDENT, Op.Delete);
                     textView.setPadding(0, pTop, pRight, pBottom);
                     textView.setTag(tag);
