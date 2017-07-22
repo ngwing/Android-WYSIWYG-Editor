@@ -145,12 +145,12 @@ public class ListItemExtensions {
                     if (s.length() > 0) {
                         if (s.charAt(s.length() - 1) == '\n') {
                             text = text.replaceAll("<br>", "");
-                            TableRow _row = (TableRow) editText.getParent();
-                            TableLayout tableLayout = (TableLayout) _row.getParent();
+                            TableRow row = (TableRow) editText.getParent();
+                            TableLayout tableLayout = (TableLayout) row.getParent();
                             ControlType type = editorCore.getControlType(tableLayout);
                             if (s.length() == 0 || s.toString().equals("\n")) {
                                 int index = editorCore.getParentView().indexOfChild(tableLayout);
-                                tableLayout.removeView(_row);
+                                tableLayout.removeView(row);
                                 editorCore.getInputExtensions().insertEditText(index + 1, "", "");
                             } else {
                                 Spanned __ = Html.fromHtml(text);
@@ -163,7 +163,7 @@ public class ListItemExtensions {
                                 }
 
 
-                                int index = tableLayout.indexOfChild(_row);
+                                int index = tableLayout.indexOfChild(row);
                                 //  insertEditText(index + 1, "");
                                 addListItem(tableLayout, type == ControlType.ol, "");
                             }
@@ -220,16 +220,25 @@ public class ListItemExtensions {
     }
 
     public void convertListToOrdered(TableLayout tableLayout) {
-        EditorControl editorControl = editorCore.createTag(ControlType.ol);
-        tableLayout.setTag(editorControl);
+        convertTag(tableLayout, ControlType.ol);
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             View childRow = tableLayout.getChildAt(i);
             CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
-            editText.setTag(editorCore.createTag(ControlType.OL_LI));
-            childRow.setTag(editorCore.createTag(ControlType.OL_LI));
             TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
+            convertTag(editText, ControlType.OL_LI);
+            convertTag(childRow, ControlType.OL_LI);
+            convertTag(bullet, ControlType.OL_LI);
             bullet.setText(String.valueOf(i + 1) + ".");
         }
+    }
+
+    private void convertTag(View view, ControlType controlType) {
+        EditorControl editorControl = editorCore.getControlTag(view);
+        if (editorControl == null) {
+            view.setTag(editorCore.createTag(controlType));
+            return;
+        }
+        editorControl.type = controlType;
     }
 
 
@@ -260,14 +269,16 @@ public class ListItemExtensions {
     }
 
     public void convertListToUnordered(TableLayout tableLayout) {
-        EditorControl type = editorCore.createTag(ControlType.ul);
-        tableLayout.setTag(type);
+        convertTag(tableLayout, ControlType.ul);
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             View childRow = tableLayout.getChildAt(i);
-            CustomEditText _EditText = (CustomEditText) childRow.findViewById(R.id.editText);
-            _EditText.setTag(editorCore.createTag(ControlType.UL_LI));
-            childRow.setTag(editorCore.createTag(ControlType.UL_LI));
+            CustomEditText editText = (CustomEditText) childRow.findViewById(R.id.editText);
             TextView bullet = (TextView) childRow.findViewById(R.id.labelOrder);
+
+            convertTag(editText, ControlType.UL_LI);
+            convertTag(childRow, ControlType.UL_LI);
+            convertTag(bullet, ControlType.UL_LI);
+
             bullet.setText("•");
         }
     }
@@ -300,8 +311,8 @@ public class ListItemExtensions {
                     * user clicked on ordered list item. since it's an unordered list, you need to loop through each and convert each
                     * item into an ordered list.
                     * */
-            TableRow _row = (TableRow) activeView.getParent();
-            TableLayout tableLayout = (TableLayout) _row.getParent();
+            TableRow row = (TableRow) activeView.getParent();
+            TableLayout tableLayout = (TableLayout) row.getParent();
             convertListToOrdered(tableLayout);
                                  /*
                     * user clicked on ordered list item. since it's an unordered list, you need to loop through each and convert each
@@ -313,9 +324,9 @@ public class ListItemExtensions {
                 * this means the item was an ordered list, you need to convert the item into a normal EditText
                 *
                 * */
-            TableRow _row = (TableRow) activeView.getParent();
-            TableLayout tableLayout = (TableLayout) _row.getParent();
-            convertListToNormalText(tableLayout, tableLayout.indexOfChild(_row));
+            TableRow row = (TableRow) activeView.getParent();
+            TableLayout tableLayout = (TableLayout) row.getParent();
+            convertListToNormalText(tableLayout, tableLayout.indexOfChild(row));
                 /*
                 *
                 * this means the item was an ordered list, you need to convert the item into a normal EditText
@@ -328,8 +339,8 @@ public class ListItemExtensions {
                 *
                 * */
 
-            TableRow _row = (TableRow) activeView.getParent();
-            TableLayout tableLayout = (TableLayout) _row.getParent();
+            TableRow row = (TableRow) activeView.getParent();
+            TableLayout tableLayout = (TableLayout) row.getParent();
             convertListToUnordered(tableLayout);
                   /*
                 *
@@ -414,9 +425,9 @@ public class ListItemExtensions {
          * If the person was on an active ul|li, move him to the previous node
          *
          */
-        TableRow _row = (TableRow) view.getParent();
-        TableLayout tableLayout = (TableLayout) _row.getParent();
-        int indexOnList = tableLayout.indexOfChild(_row);
+        TableRow row = (TableRow) view.getParent();
+        TableLayout tableLayout = (TableLayout) row.getParent();
+        int indexOnList = tableLayout.indexOfChild(row);
         if (indexOnList > 0) {
             /**
              * check if the index of the deleted row is <0, if so, move the focus to the previous li
@@ -431,7 +442,7 @@ public class ListItemExtensions {
             if (editText.requestFocus()) {
                 editText.setSelection(editText.getText().length());
             }
-            tableLayout.removeView(_row);
+            tableLayout.removeView(row);
         } else {
             /**
              * The removed row was first on the list. delete the list, and set the focus to previous element on the editor
