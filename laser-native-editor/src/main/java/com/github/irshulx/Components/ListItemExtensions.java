@@ -235,7 +235,7 @@ public class ListItemExtensions {
 
     public void updateListStyle(TableLayout tableLayout, EditorTextStyle style) {
         EditorControl control = editorCore.getControlTag(tableLayout);
-        editorCore.getInputExtensions().addTagStyle(control, style);
+        editorCore.getInputExtensions().updateTagStyle(control, style);
 
         if (style == EditorTextStyle.BOLD && editorCore.getInputExtensions().isHeader(control))
             return;

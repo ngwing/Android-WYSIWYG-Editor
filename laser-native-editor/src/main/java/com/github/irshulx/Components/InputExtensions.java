@@ -284,6 +284,12 @@ public class InputExtensions {
         return tag;
     }
 
+    public EditorControl updateTagStyle(EditorControl tag, EditorTextStyle style) {
+        if (tag.controlStyles != null && tag.controlStyles.contains(style))
+            return deleteTagStyle(tag, style);
+        return addTagStyle(tag, style);
+    }
+
     public EditorControl deleteTagStyle(EditorControl tag, EditorTextStyle style) {
         tag = editorCore.updateTagStyle(tag, style, Op.Delete);
         return tag;
