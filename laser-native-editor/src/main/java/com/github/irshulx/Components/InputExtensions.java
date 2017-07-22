@@ -379,18 +379,10 @@ public class InputExtensions {
 
     public void boldifyText(EditorControl tag, TextView editText, boolean isHeader) {
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Delete);
+            tag = deleteTagStyle(tag, EditorTextStyle.BOLD);
             editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
-        } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLDITALIC)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Delete);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Insert);
-            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD_ITALIC : Typeface.ITALIC));
-        } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Insert);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Delete);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD_ITALIC));
         } else {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Insert);
+            tag = addTagStyle(tag, EditorTextStyle.BOLD);
             editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD));
         }
         editText.setTag(tag);
@@ -422,19 +414,10 @@ public class InputExtensions {
     public void italicizeText(EditorControl tag, TextView editText, boolean isHeader) {
 
         if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.ITALIC)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Delete);
+            tag = deleteTagStyle(tag, EditorTextStyle.ITALIC);
             editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD : Typeface.NORMAL));
-        } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLDITALIC)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Delete);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Insert);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD));
-        } else if (editorCore.containsStyle(tag.controlStyles, EditorTextStyle.BOLD)) {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLDITALIC, Op.Insert);
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.BOLD, Op.Delete);
-            editText.setTypeface(getTypeface(CONTENT, Typeface.BOLD_ITALIC));
         } else {
-            tag = editorCore.updateTagStyle(tag, EditorTextStyle.ITALIC, Op.Insert);
-            editText.setTypeface(getTypeface(CONTENT, isHeader ? Typeface.BOLD_ITALIC : Typeface.ITALIC));
+            tag = addTagStyle(tag, EditorTextStyle.ITALIC);
         }
         editText.setTag(tag);
     }
