@@ -264,6 +264,7 @@ public class HTMLExtensions {
         }
         tmpl = tmpl.replace("{{$tag}}", "p");
         tmpl = tmpl.replace("{{$content}}", trimmed);
+        tmpl = tmpl.replace("{{$class}}", "");
         return tmpl;
     }
 
