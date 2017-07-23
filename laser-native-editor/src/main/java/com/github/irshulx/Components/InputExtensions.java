@@ -600,21 +600,23 @@ public class InputExtensions {
      * @return typeface
      */
     public Typeface getTypeface(int mode, int style) {
-        if (mode == HEADING && headingTypeface == null) {
-            return Typeface.create(getFontFace(), style);
-        } else if (mode == CONTENT && contentTypeface == null) {
-            return Typeface.create(getFontFace(), style);
-        }
-        if (mode == HEADING && !headingTypeface.containsKey(style)) {
-            throw new IllegalArgumentException("the provided fonts for heading is missing the varient for this style. Please checkout the documentation on adding custom fonts.");
-        } else if (mode == CONTENT && !headingTypeface.containsKey(style)) {
-            throw new IllegalArgumentException("the provided fonts for content is missing the varient for this style. Please checkout the documentation on adding custom fonts.");
-        }
-        if (mode == HEADING) {
-            return FontCache.get(headingTypeface.get(style), editorCore.getContext());
-        } else {
-            return FontCache.get(contentTypeface.get(style), editorCore.getContext());
-        }
+//        if (mode == HEADING && headingTypeface == null) {
+//            return Typeface.create(getFontFace(), style);
+//        } else if (mode == CONTENT && contentTypeface == null) {
+//
+//            return Typeface.create(getFontFace(), style);
+//        }
+//        if (mode == HEADING && !headingTypeface.containsKey(style)) {
+//            throw new IllegalArgumentException("the provided fonts for heading is missing the varient for this style. Please checkout the documentation on adding custom fonts.");
+//        } else if (mode == CONTENT && !headingTypeface.containsKey(style)) {
+//            throw new IllegalArgumentException("the provided fonts for content is missing the varient for this style. Please checkout the documentation on adding custom fonts.");
+//        }
+//        if (mode == HEADING) {
+//            return FontCache.get(headingTypeface.get(style), editorCore.getContext());
+//        } else {
+//            return FontCache.get(contentTypeface.get(style), editorCore.getContext());
+//        }
+        return Typeface.defaultFromStyle(style);
     }
 
     public void setFocus(CustomEditText view) {
