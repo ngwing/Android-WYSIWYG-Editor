@@ -100,11 +100,21 @@ public class HTMLExtensions {
 
         String[] classes = classAttr.split(" ");
         for (String classString : classes) {
-            EditorTextStyle style = EditorTextStyle.valueOf(classString.toUpperCase());
+            EditorTextStyle style = getStyle(classString.toUpperCase());
             if (style == null)
                 continue;
             editorCore.getInputExtensions().updateTextStyle(style, textView);
         }
+    }
+
+    private EditorTextStyle getStyle(String classString) {
+        EditorTextStyle style = null;
+        try {
+            style = EditorTextStyle.valueOf(classString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+
+        }
+        return style;
     }
 
     private void renderClass(Element element, TableLayout tableLayout) {
