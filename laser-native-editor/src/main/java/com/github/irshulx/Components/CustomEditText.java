@@ -30,11 +30,11 @@ public class CustomEditText extends TextInputEditText {
 
 
 
-    @Override
-    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
-        return new CustomInputConnection(super.onCreateInputConnection(outAttrs),
-                true);
-    }
+//    @Override
+//    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+//        return new CustomInputConnection(super.onCreateInputConnection(outAttrs),
+//                true);
+//    }
 
     private class CustomInputConnection extends InputConnectionWrapper {
 
