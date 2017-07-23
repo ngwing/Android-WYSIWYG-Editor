@@ -75,8 +75,8 @@ public class ListItemExtensions {
 
     public TableLayout createTable() {
         TableLayout table = new TableLayout(editorCore.getContext());
-        table.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        table.setPadding(30, 10, 10, 10);
+        table.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        table.setPadding(0, 10, 0, 10);
         return table;
     }
 
