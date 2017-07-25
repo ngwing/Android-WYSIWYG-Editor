@@ -232,6 +232,7 @@ public class ImageExtensions {
     private void bindEvents(final View layout) {
         final ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
         final View btn_remove = layout.findViewById(R.id.btn_remove);
+        final View imageCover = layout.findViewById(R.id.imageView_cover);
 
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,12 +268,14 @@ public class ImageExtensions {
             @Override
             public void onClick(View v) {
                 btn_remove.setVisibility(View.VISIBLE);
+                imageCover.setVisibility(View.VISIBLE);
             }
         });
         imageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 btn_remove.setVisibility(hasFocus ? View.VISIBLE : View.GONE);
+                imageCover.setVisibility(hasFocus ? View.VISIBLE : View.GONE);
             }
         });
     }

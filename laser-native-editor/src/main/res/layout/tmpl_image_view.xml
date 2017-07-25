@@ -63,17 +63,28 @@
             android:visibility="gone" />
     </RelativeLayout>
 
+
+    <ImageView
+        android:id="@+id/imageView_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/imageView"
+        android:layout_alignTop="@id/imageView"
+        android:adjustViewBounds="true"
+        android:background="@drawable/editor_img_cover"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
+
     <ImageButton
         android:id="@+id/btn_remove"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
         android:maxHeight="40dp"
         android:maxWidth="40dp"
-        android:src="@drawable/ic_close_white_36dp"
+        android:src="@drawable/ic_editor_delte_img"
         android:visibility="gone" />
 
 
