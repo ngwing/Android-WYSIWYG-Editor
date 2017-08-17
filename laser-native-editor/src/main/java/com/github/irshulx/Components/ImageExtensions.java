@@ -77,7 +77,8 @@ public class ImageExtensions {
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView txtStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
         txtStatus.setText(editorCore.uploadingHint);
-        EditText desc = (EditText) childLayout.findViewById(R.id.desc);
+        CustomEditText desc = (CustomEditText) childLayout.findViewById(R.id.desc);
+        desc.editorCore = editorCore;
         desc.setHint(editorCore.imageDescriptionHint);
         imageView.setImageBitmap(image);
         final String uuid = generateUUID();
@@ -162,6 +163,7 @@ public class ImageExtensions {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         CustomEditText text = (CustomEditText) childLayout.findViewById(R.id.desc);
+        text.editorCore = editorCore;
         if (TextUtils.isEmpty(desc)) {
             text.setVisibility(View.GONE);
         } else {
