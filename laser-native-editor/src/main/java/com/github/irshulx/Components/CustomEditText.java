@@ -89,6 +89,7 @@ public class CustomEditText extends TextInputEditText {
             case android.R.id.paste:
                 if (this.getId() == R.id.desc) {
                     onImageDescriptionPaste();
+                    return true;
                 }
                 onTextPaste();
                 consumed = true;
