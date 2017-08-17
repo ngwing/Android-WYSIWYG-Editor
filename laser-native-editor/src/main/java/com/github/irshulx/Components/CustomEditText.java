@@ -92,6 +92,10 @@ public class CustomEditText extends TextInputEditText {
             case android.R.id.copy:
                 onTextCopy();
                 consumed = super.onTextContextMenuItem(id);
+                break;
+            default:
+                consumed = super.onTextContextMenuItem(id);
+                break;
         }
         return consumed;
     }
@@ -109,7 +113,7 @@ public class CustomEditText extends TextInputEditText {
         String[] strings = clipboardContent.split("\n");
 
         for (String string : strings) {
-            if(string.trim().isEmpty())
+            if (string.trim().isEmpty())
                 continue;
             editorCore.getInputExtensions().insertEditText(editorCore.determineIndex(ControlType.INPUT), "", string);
         }

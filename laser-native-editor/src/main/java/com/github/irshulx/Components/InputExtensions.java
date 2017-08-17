@@ -244,9 +244,8 @@ public class InputExtensions {
 
     }
 
-
     public TextView insertEditText(int position, String hint, String text) {
-        String nextHint = isLastText(position) ? null : editorCore.placeHolder;
+        String nextHint = isLastText(position) ? "" : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
             final CustomEditText view = getNewEditTextInst(nextHint, text);
             editorCore.getParentView().addView(view, position);
@@ -260,6 +259,7 @@ public class InputExtensions {
                 });
                 editorCore.setActiveView(view);
             }
+            updateEditTextHint(position);
             return view;
         } else {
             final TextView view = getNewTextView(text);
@@ -269,6 +269,16 @@ public class InputExtensions {
         }
     }
 
+    public void updateEditTextHint(int position) {
+        int count = editorCore.getParentChildCount();
+        for (int i = position + 1; i < count; i++) {
+            View child = editorCore.getChildAt(i);
+            ControlType controlType = editorCore.getControlType(child);
+            if (controlType != ControlType.INPUT)
+                return;
+            ((CustomEditText) child).setHint("");
+        }
+    }
 
     private EditorControl rewriteTags(EditorControl tag, EditorTextStyle styleToAdd) {
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
