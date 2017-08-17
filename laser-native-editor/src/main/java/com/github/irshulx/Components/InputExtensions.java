@@ -40,7 +40,6 @@ import android.widget.TextView;
 
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.R;
-import com.github.irshulx.Utilities.FontCache;
 import com.github.irshulx.models.ControlType;
 import com.github.irshulx.models.EditorControl;
 import com.github.irshulx.models.EditorTextStyle;
@@ -163,6 +162,7 @@ public class InputExtensions {
         if (text != null) {
             setText(editText, text);
         }
+        editText.editorCore = editorCore;
         editText.setTag(editorCore.createTag(ControlType.INPUT));
         editText.setBackgroundDrawable(ContextCompat.getDrawable(this.editorCore.getContext(), R.drawable.invisible_edit_text));
         editText.setOnKeyListener(new View.OnKeyListener() {
@@ -181,7 +181,8 @@ public class InputExtensions {
                 }
             }
         });
-        editText.addTextChangedListener(new TextWatcher() {
+
+        TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
@@ -201,37 +202,30 @@ public class InputExtensions {
                 /*
                 * if user had pressed enter, replace it with br
                 */
-                    for (int i = 0; i < s.length(); i++) {
-                        if (s.charAt(i) == '\n') {
-                            CharSequence subChars = s.subSequence(0, i);
-                            SpannableStringBuilder ssb = new SpannableStringBuilder(subChars);
-                            text = Html.toHtml(ssb);
-                            if (text.length() > 0)
-                                setText(editText, text);
-                            else
-                                s.clear();
-                            int index = editorCore.getParentView().indexOfChild(editText);
+                    if (s.charAt(s.length() - 1) == '\n') {
+                        SpannableStringBuilder ssb = new SpannableStringBuilder(s);
+                        text = Html.toHtml(ssb);
+                        if (text.length() > 0)
+                            setText(editText, text);
+                        else
+                            s.clear();
+                        int index = editorCore.getParentView().indexOfChild(editText);
                     /* if the index was 0, set the placeholder to empty, behaviour happens when the user just press enter
                      */
-                            if (index == 0) {
-                                editText.setHint(null);
-                                editText.setTag(R.id.control_tag, hint);
-                            }
-                            int position = index + 1;
-                            String newText = null;
-                            int lastIndex = s.length() - 1;
-                            int nextIndex = i + 1;
-                            if (nextIndex < lastIndex)
-                                newText = s.subSequence(nextIndex, lastIndex).toString();
-                            insertEditText(position, hint, newText);
+                        if (index == 0) {
+                            editText.setHint(null);
+                            editText.setTag(R.id.control_tag, hint);
                         }
+                        int position = index + 1;
+                        insertEditText(position, hint, "");
                     }
                 }
                 if (editorCore.getEditorListener() != null) {
                     editorCore.getEditorListener().onTextChanged(editText, s);
                 }
             }
-        });
+        };
+        editText.addTextChangedListener(textWatcher);
         return editText;
     }
 
@@ -572,9 +566,7 @@ public class InputExtensions {
     }
 
     public CharSequence noTrailingwhiteLines(CharSequence text) {
-        if (text.length() == 0)
-            return text;
-        while (text.charAt(text.length() - 1) == '\n') {
+        while (text.length() > 0 && text.charAt(text.length() - 1) == '\n') {
             text = text.subSequence(0, text.length() - 1);
         }
         return text;
