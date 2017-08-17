@@ -117,4 +117,3 @@ public class CustomEditText extends TextInputEditText {
         }
     }
 }
-
