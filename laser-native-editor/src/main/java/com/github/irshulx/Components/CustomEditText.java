@@ -12,6 +12,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 
 import com.github.irshulx.EditorCore;
+import com.github.irshulx.R;
 import com.github.irshulx.Utilities.ClipboardUtil;
 import com.github.irshulx.models.ControlType;
 
@@ -86,6 +87,9 @@ public class CustomEditText extends TextInputEditText {
                 consumed = super.onTextContextMenuItem(id);
                 break;
             case android.R.id.paste:
+                if (this.getId() == R.id.desc) {
+                    onImageDescriptionPaste();
+                }
                 onTextPaste();
                 consumed = true;
                 break;
@@ -106,12 +110,19 @@ public class CustomEditText extends TextInputEditText {
     public void onTextCopy() {
     }
 
+    public void onImageDescriptionPaste() {
+        String clipboardContent = ClipboardUtil.getClipboardContent(getContext());
+        clipboardContent = clipboardContent.replace("\n", " ");
+        this.setText(clipboardContent);
+    }
+
     public void onTextPaste() {
         String clipboardContent = ClipboardUtil.getClipboardContent(getContext());
         String[] strings = clipboardContent.split("\n");
 
-        for (String string : strings) {
-            if (string.trim().isEmpty())
+        for (int i = 0; i < strings.length; i++) {
+            String string = strings[i].trim();
+            if (string.isEmpty())
                 continue;
             editorCore.getInputExtensions().insertEditText(editorCore.determineIndex(ControlType.INPUT), "", string);
         }
