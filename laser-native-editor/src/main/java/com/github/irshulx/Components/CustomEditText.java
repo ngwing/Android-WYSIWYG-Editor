@@ -7,16 +7,12 @@ package com.github.irshulx.Components;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
-import android.widget.EditText;
 
 import com.github.irshulx.EditorCore;
 import com.github.irshulx.Utilities.ClipboardUtil;
-import com.github.irshulx.Utilities.LogUtil;
 import com.github.irshulx.models.ControlType;
 
 /**
