@@ -108,8 +108,6 @@ public class CustomEditText extends TextInputEditText {
 
     public void onTextPaste() {
         String clipboardContent = ClipboardUtil.getClipboardContent(getContext());
-
-
         String[] strings = clipboardContent.split("\n");
 
         for (String string : strings) {
