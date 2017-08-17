@@ -104,7 +104,8 @@ public class ImageExtensions {
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView txtStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
         txtStatus.setText(editorCore.uploadingHint);
-        EditText editTextDesc = (EditText) childLayout.findViewById(R.id.desc);
+        CustomEditText editTextDesc = (CustomEditText) childLayout.findViewById(R.id.desc);
+        editTextDesc.editorCore = editorCore;
         editTextDesc.setText(description);
         editTextDesc.setHint(editorCore.imageDescriptionHint);
 //        imageView.setImageBitmap(image);
