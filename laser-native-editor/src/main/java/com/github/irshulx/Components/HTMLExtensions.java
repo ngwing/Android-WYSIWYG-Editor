@@ -134,8 +134,6 @@ public class HTMLExtensions {
     private void renderImage(Element element) {
         String url = element.attr("src");
         String description = element.attr("alt");
-        String size = element.attr("data-size");
-        url = url + size;
         int index = editorCore.getParentChildCount();
         editorCore.getImageExtensions().insertImage(url, description, index);
     }
@@ -200,7 +198,7 @@ public class HTMLExtensions {
                 template = "<hr data-tag=\"hr\"/>";
                 break;
             case img:
-                template = "<div class=\"img\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"  data-size=\"{{$size}}\"/></div>";
+                template = "<div class=\"img\" data-tag=\"img\"><img src=\"{{$content}}\" alt=\"{{$desc}}\"/></div>";
                 break;
             case audio:
                 template = "<div class = \"audio\" data-tag=\"audio\"><audio class = \"data\" src=\"{{$content}}\" preload=\"false\"/></div>";
@@ -289,7 +287,12 @@ public class HTMLExtensions {
                     break;
                 case img:
                     ImageUrlWrapper wrapper = ImageUrlWrapper.wrap(item.content.get(0));
-                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", wrapper.getUrl()).replace("{{$desc}}", item.content.get(1)).replace("{{$size}}", wrapper.getSizeString()));
+                    String templateHtml = getTemplateHtml(item.type);
+                    templateHtml = templateHtml.replace("{{$content}}", wrapper.getUrl());
+                    String desc = item.content.get(1);
+                    if (desc != null)
+                        templateHtml = templateHtml.replace("{{$desc}}", desc);
+                    htmlBlock.append(templateHtml);
                     break;
                 case audio:
                     String path = item.content.get(0);
