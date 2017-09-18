@@ -295,7 +295,7 @@ public class EditorTestActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            editor.insertImage(bitmap, uri);
+//            editor.insertImage(bitmap, uri);
 //            } catch (IOException e) {
 //                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
 //                e.printStackTrace();

@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.github.irshulx.Components.CustomEditText;
+import com.github.irshulx.Components.ImageExtensions;
 import com.github.irshulx.models.EditorTextStyle;
 import com.github.irshulx.models.EditorContent;
 import com.github.irshulx.models.RenderType;
@@ -229,8 +230,8 @@ public class Editor extends EditorCore {
         getImageExtensions().openImageGallery();
     }
 
-    public void insertImage(Bitmap bitmap, Uri uri) {
-        getImageExtensions().insertImage(bitmap, uri, -1);
+    public void insertImage(String path, int index, ImageExtensions.OnInsertImageCallback callback) {
+        getImageExtensions().insertImage(path, index, callback);
     }
 
     public void onImageUploadComplete(String url, String imageId) {
