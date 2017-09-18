@@ -230,8 +230,8 @@ public class Editor extends EditorCore {
         getImageExtensions().openImageGallery();
     }
 
-    public void insertImage(String path, int index, ImageExtensions.OnInsertImageCallback callback) {
-        getImageExtensions().insertImage(path, index, callback);
+    public void insertImage(String path, ImageExtensions.OnInsertImageCallback callback) {
+        getImageExtensions().insertImage(path, -1, callback);
     }
 
     public void onImageUploadComplete(String url, String imageId) {
