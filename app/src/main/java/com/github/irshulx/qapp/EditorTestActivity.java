@@ -179,14 +179,14 @@ public class EditorTestActivity extends AppCompatActivity {
 
 //                if (view == null)
 //                    return;
-                int height = image.getHeight();
-                int width = image.getWidth();
-                int targetWidth = 980 / 3 * 4;
-                int targetHeight = height / width * targetWidth;
-                scrollView.scrollBy(0, targetHeight);
+//                int height = image.getHeight();
+//                int width = image.getWidth();
+//                int targetWidth = 980 / 3 * 4;
+//                int targetHeight = height / width * targetWidth;
+//                scrollView.scrollBy(0, targetHeight);
 
-                String path = getPath(url);
-                Log.d("onActivityResult", "onActivityResult onUpload path : " + path);
+//                String path = getPath(url);
+//                Log.d("onActivityResult", "onActivityResult onUpload path : " + path);
 
                 editor.onImageUploadComplete("http://img5.duitang.com/uploads/item/201602/19/20160219121711_TKtAv.jpeg[1200,1132]", uuid);
                 // editor.onImageUploadFailed(uuid);
