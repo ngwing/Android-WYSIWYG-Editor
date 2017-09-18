@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -32,11 +31,7 @@ import com.github.irshulx.EditorListener;
 import com.github.irshulx.models.EditorTextStyle;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EditorTestActivity extends AppCompatActivity {
@@ -179,7 +174,7 @@ public class EditorTestActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUpload(Bitmap image, Uri uri, String uuid) {
+            public void onUpload(String url, String uuid) {
 //                Toast.makeText(EditorTestActivity.this, uuid, Toast.LENGTH_LONG).show();
 
 //                if (view == null)
@@ -190,7 +185,7 @@ public class EditorTestActivity extends AppCompatActivity {
                 int targetHeight = height / width * targetWidth;
                 scrollView.scrollBy(0, targetHeight);
 
-                String path = getPath(uri);
+                String path = getPath(url);
                 Log.d("onActivityResult", "onActivityResult onUpload path : " + path);
 
                 editor.onImageUploadComplete("http://img5.duitang.com/uploads/item/201602/19/20160219121711_TKtAv.jpeg[1200,1132]", uuid);

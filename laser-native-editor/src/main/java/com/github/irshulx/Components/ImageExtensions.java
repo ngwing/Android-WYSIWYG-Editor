@@ -21,13 +21,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,7 +70,11 @@ public class ImageExtensions {
         ((Activity) editorCore.getContext()).startActivityForResult(Intent.createChooser(intent, "Select an image"), editorCore.PICK_IMAGE_REQUEST);
     }
 
-    public void insertImage(Bitmap image, Uri uri, int index) {
+    public interface OnInsertImageCallback {
+        void onInsert(ImageView view);
+    }
+
+    public void insertImage(String path, int index, OnInsertImageCallback callback) {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView txtStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
@@ -80,7 +82,7 @@ public class ImageExtensions {
         CustomEditText desc = (CustomEditText) childLayout.findViewById(R.id.desc);
         desc.editorCore = editorCore;
         desc.setHint(editorCore.imageDescriptionHint);
-        imageView.setImageBitmap(image);
+        callback.onInsert(imageView);
         final String uuid = generateUUID();
         bindEvents(childLayout);
         if (index == -1) {
@@ -97,7 +99,7 @@ public class ImageExtensions {
         childLayout.setTag(control);
         childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
         txtStatus.setVisibility(View.VISIBLE);
-        editorCore.onUpload(image, uri, uuid);
+        editorCore.onUpload(path, uuid);
     }
 
     public void insertImage(String url, String description, int index) {
@@ -227,7 +229,7 @@ public class ImageExtensions {
         }
 
         protected void onPostExecute(Bitmap result) {
-            insertImage(result, null, this.insertIndex);
+//            insertImage(result, null, this.insertIndex);
         }
     }
 

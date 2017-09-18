@@ -16,11 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.irshulx.Components.ImageExtensions;
 import com.github.irshulx.Editor;
 import com.github.irshulx.EditorListener;
 import com.github.irshulx.Utilities.ImageUrlWrapper;
-import com.github.irshulx.models.EditorContent;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -75,7 +73,7 @@ public class PreviewFragment extends Fragment {
             }
 
             @Override
-            public void onUpload(Bitmap image, Uri uri, String uuid) {
+            public void onUpload(String url, String uuid) {
 
             }
 

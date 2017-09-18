@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.net.Uri;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -754,11 +752,10 @@ public class EditorCore extends LinearLayout {
         tv.setHint(placeHolder);
     }
 
-    public void onUpload(Bitmap image, Uri uri, String uuid) {
+    public void onUpload(String path, String uuid) {
         if (listener == null)
             return;
-        listener.onUpload(image, uri, uuid);
-
+        listener.onUpload(path, uuid);
     }
 
     public void onInsertImage(String url, int index, ImageView imageView) {

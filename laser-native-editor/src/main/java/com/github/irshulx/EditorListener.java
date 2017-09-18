@@ -1,7 +1,5 @@
 package com.github.irshulx;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
@@ -14,7 +12,7 @@ import android.widget.ImageView;
 public interface EditorListener {
     void onTextChanged(EditText editText, Editable text);
 
-    void onUpload(Bitmap image, Uri uri, String uuid);
+    void onUpload(String path, String uuid);
 
     void onInsertImage(String url, int index, ImageView imageView);
 
